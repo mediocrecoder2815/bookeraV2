@@ -2,6 +2,7 @@ package personal.bookerav2.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,5 +41,7 @@ public class Author {
     @Column(name = "country")
     CountryCode country;
 
-
+    public String getFullName(){
+        return country.getGetFullName();
+    }
 }
