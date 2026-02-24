@@ -6,7 +6,7 @@ public enum CountryCode {
     us("United States"),
     ru("Russia");
 
-    private String fullName;
+    private final String fullName;
     private CountryCode(String fullName){
         this.fullName = fullName;
     }
