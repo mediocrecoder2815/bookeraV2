@@ -14,6 +14,7 @@ import lombok.Setter;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "category_id")
     Long categoryId;
 
     @Column(name = "category_name", nullable = false)

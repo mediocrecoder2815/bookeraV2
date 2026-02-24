@@ -18,6 +18,7 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id")
     UUID userId;
 
     @Column(name = "username", nullable = false)
@@ -39,4 +40,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     Set<Book> books = new HashSet<>();
+
+    @Column(name = "avatar_url")
+    String avatarUrl;
 }

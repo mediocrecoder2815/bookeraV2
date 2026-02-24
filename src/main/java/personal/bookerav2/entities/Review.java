@@ -16,6 +16,7 @@ import java.util.UUID;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "review_id")
     UUID reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,6 +27,10 @@ public class Review {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    @Column(name = "rating")
-    Double rating;
+    @Column(name = "rating", nullable = false)
+    Integer rating;
+
+    @Column(name = "content")
+    String content;
+
 }

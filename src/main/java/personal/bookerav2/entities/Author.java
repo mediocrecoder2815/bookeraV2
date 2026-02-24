@@ -20,6 +20,7 @@ import java.util.UUID;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "author_id")
     UUID authorId;
 
     @Column(name = "name", nullable = false)
@@ -40,6 +41,10 @@ public class Author {
     @Enumerated(EnumType.STRING)
     @Column(name = "country")
     CountryCode country;
+
+
+    @Column(name = "photo_url", nullable = true)
+    String pictureUrl;
 
     public String getFullName(){
         return country.getGetFullName();

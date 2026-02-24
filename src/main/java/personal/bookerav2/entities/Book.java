@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "book_id")
     UUID bookId;
 
     @Column(name = "name", nullable = false)
@@ -54,5 +55,8 @@ public class Book {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
     Set<Review> reviews;
+
+    @Column(name = "picture_url", nullable = true)
+    String pictureUrl;
 
 }
