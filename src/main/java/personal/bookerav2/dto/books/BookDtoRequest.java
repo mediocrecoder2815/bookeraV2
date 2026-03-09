@@ -1,5 +1,7 @@
 package personal.bookerav2.dto.books;
 
+import java.time.Instant;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -8,7 +10,8 @@ public record BookDtoRequest(
         String isbn,
         Integer totalPages,
         String description,
+        Instant dateOfPublish,
         UUID authorId,
-        Set<Long> categoriesId
+        Optional<Set<Long>> categoriesId
 ) {
 }

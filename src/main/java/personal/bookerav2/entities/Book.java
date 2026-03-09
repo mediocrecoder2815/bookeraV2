@@ -52,7 +52,6 @@ public class Book {
     )
     Set<Category> categories = new HashSet<>();
 
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
     Set<Review> reviews;
 
