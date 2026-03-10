@@ -24,7 +24,11 @@ public class BookWrapper {
                         .stream()
                         .map(BookWrapper::toAuthorDto)
                         .collect(Collectors.toSet()),
-                book.getCategories()
+                book.getCategories(),
+                book.getReviews()
+                        .stream()
+                        .map(ReviewWrapper::toReviewDtoResponse)
+                        .collect(Collectors.toSet())
         );
     }
 
