@@ -1,5 +1,6 @@
 package personal.bookerav2.dto.wrappers;
 
+import personal.bookerav2.dto.authors.AuthorBookDto;
 import personal.bookerav2.dto.books.BookAuthorDto;
 import personal.bookerav2.dto.books.BookDtoAll;
 import personal.bookerav2.dto.books.BookDtoRequest;
@@ -50,4 +51,5 @@ public class BookWrapper {
         newBook.setDateOfPublish(book.dateOfPublish());
         return newBook;
     }
+
 }
