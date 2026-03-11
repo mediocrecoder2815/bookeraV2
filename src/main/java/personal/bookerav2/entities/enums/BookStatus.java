@@ -1,4 +1,4 @@
-package personal.bookerav2.entities.utils;
+package personal.bookerav2.entities.enums;
 
 
 public enum BookStatus {

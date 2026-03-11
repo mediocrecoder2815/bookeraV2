@@ -13,9 +13,12 @@ import java.util.List;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    public Category createCategory(String name){
+    public Category createCategory(Category category){
         Category c = new Category();
-        c.setCategoryName(name);
+        if (categoryRepository.findByCategoryName(category.getCategoryName()).isPresent()){
+            throw new IllegalArgumentException("Category already exists");
+        }
+        c.setCategoryName(category.getCategoryName());
         return categoryRepository.save(c);
     }
     public void deleteCategoryById(Long id){
@@ -24,6 +27,9 @@ public class CategoryService {
     }
     public Category updateCategory(Long id, String name){
         Category c = categoryRepository.findById(id).orElseThrow();
+        if (categoryRepository.findByCategoryName(name).isPresent()){
+            throw new IllegalArgumentException("CATEGORY ALREADY EXISTS");
+        }
         c.setCategoryName(name);
         return c;
     }
@@ -34,7 +40,7 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
     public Category getCategoryByName(String name){
-        return categoryRepository.findByCategoryName(name);
+        return categoryRepository.findByCategoryName(name).orElseThrow();
     }
 
 }

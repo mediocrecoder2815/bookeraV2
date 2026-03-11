@@ -2,18 +2,17 @@ package personal.bookerav2.entities;
 
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import personal.bookerav2.entities.utils.CountryCode;
+import personal.bookerav2.entities.enums.CountryCode;
 
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "author")
+@Table(name = "authors")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,10 +22,10 @@ public class Author {
     @Column(name = "author_id")
     UUID authorId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 25)
     String name;
 
-    @Column(name = "surname", nullable = false)
+    @Column(name = "surname", nullable = false, length = 25)
     String surname;
 
     @Column(name = "description")

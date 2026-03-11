@@ -1,9 +1,8 @@
 package personal.bookerav2.dto.authors;
 
-import personal.bookerav2.entities.utils.CountryCode;
+import personal.bookerav2.entities.enums.CountryCode;
 
 import java.time.Instant;
-import java.util.UUID;
 
 public record AuthorDtoRequest(
         String name,

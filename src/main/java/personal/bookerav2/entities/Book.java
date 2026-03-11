@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,10 +21,10 @@ public class Book {
     @Column(name = "book_id")
     UUID bookId;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 50)
     String name;
 
-    @Column(name = "ISBN", nullable = false)
+    @Column(name = "ISBN", nullable = false, length = 20)
     String isbn;
 
     @Column(name = "total_pages")
