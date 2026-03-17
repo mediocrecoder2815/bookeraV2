@@ -16,12 +16,12 @@ import java.util.UUID;
     - [ ] add exceptions \ mb return Optional in service ?
     - [ ] improve delete method
  */
-@RestController("/api/authors")
+@RequestMapping("/api/authors")
 @AllArgsConstructor
 public class AuthorController {
     private final AuthorService authorService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<AuthorDtoAll>> getAllAuthors(){
         return ResponseEntity.ok(authorService.getAllAuthors());
     }

@@ -9,12 +9,12 @@ import personal.bookerav2.service.CategoryService;
 import java.util.List;
 import java.util.Set;
 
-@RestController("/api/categories")
+@RequestMapping("/api/categories")
 @AllArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Category>> getAllCategories(){
         return ResponseEntity.ok(categoryService.getAllCategories());
     }

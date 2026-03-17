@@ -1,5 +1,6 @@
 package personal.bookerav2.dto.wrappers;
 
+import org.springframework.stereotype.Component;
 import personal.bookerav2.dto.authors.AuthorBookDto;
 import personal.bookerav2.dto.books.BookAuthorDto;
 import personal.bookerav2.dto.books.BookDtoAll;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class BookWrapper {
     public static BookDtoResponse toResponseDto(Book book){
         return new BookDtoResponse(

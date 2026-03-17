@@ -12,15 +12,16 @@ import personal.bookerav2.service.BookService;
 import java.util.List;
 import java.util.UUID;
 
-@RestController("/api/books")
+@RequestMapping("/api/books")
 @AllArgsConstructor
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<BookDtoAll>> getAllBooks(){
         return ResponseEntity.ok(bookService.getAllBooks());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<BookDtoResponse> getBookById(@PathVariable UUID id){
         return ResponseEntity.ok(bookService.getBookById(id));
