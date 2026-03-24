@@ -1,5 +1,6 @@
 package personal.bookerav2.dto.books;
 
+import personal.bookerav2.dto.reviews.ReviewBookDto;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.entities.Category;
 
@@ -14,6 +15,6 @@ public record BookDtoResponse (
         String description,
         Set<BookAuthorDto> authors,
         Set<Category> categorySet,
-        Set<ReviewDtoResponse> reviews
+        Set<ReviewBookDto> reviews
 ){
 }

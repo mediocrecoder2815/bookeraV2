@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.reviews.ReviewDtoRequest;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
-import personal.bookerav2.dto.wrappers.ReviewWrapper;
+import personal.bookerav2.dto.wrappers.ReviewMapper;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Review;
 import personal.bookerav2.entities.User;
@@ -22,27 +22,27 @@ public class ReviewService{
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    public ReviewDtoResponse createReview(ReviewDtoRequest r){
+    public ReviewDtoResponse createReview(ReviewDtoRequest r, UUID bookId){
         Review review = new Review();
-        Book bookToFind = bookRepository.findById(r.bookId()).orElseThrow();
+        Book bookToFind = bookRepository.findById(bookId).orElseThrow();
         User userToFind = userRepository.findById(r.userId()).orElseThrow();
         review.setContent(r.content());
         review.setBook(bookToFind);
         review.setUser(userToFind);
         review.setRating(r.rating());
-        return ReviewWrapper.toReviewDtoResponse(reviewRepository.save(review));
+        return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
     public ReviewDtoResponse updateReview(ReviewDtoRequest r, UUID reviewId){
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         review.setRating(r.rating());
         review.setContent(r.content());
-        return ReviewWrapper.toReviewDtoResponse(reviewRepository.save(review));
+        return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
     public void deleteReview(UUID id){
         Review r = reviewRepository.findById(id).orElseThrow();
         reviewRepository.delete(r);
     }
     public ReviewDtoResponse getReviewById(UUID id){
-        return ReviewWrapper.toReviewDtoResponse(reviewRepository.findById(id).orElseThrow());
+        return ReviewMapper.toReviewDtoResponse(reviewRepository.findById(id).orElseThrow());
     }
 }

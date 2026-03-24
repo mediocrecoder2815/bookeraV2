@@ -10,7 +10,7 @@ import personal.bookerav2.entities.Book;
 import java.util.stream.Collectors;
 
 @Component
-public class AuthorWrapper {
+public class AuthorMapper {
     public static AuthorDtoResponse toResponseDto(Author author){
         return new AuthorDtoResponse(
                 author.getAuthorId(),
@@ -21,7 +21,7 @@ public class AuthorWrapper {
                 author.getDateOfBirth(),
                 author.getBooks().
                         stream().
-                        map(AuthorWrapper::toAuthorBookDto).
+                        map(AuthorMapper::toAuthorBookDto).
                         collect(Collectors.toSet())
         );
     }

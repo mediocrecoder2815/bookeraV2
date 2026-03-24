@@ -4,7 +4,6 @@ import java.util.UUID;
 
 public record ReviewDtoRequest(
         String content,
-        UUID bookId,
         UUID userId,
         Integer rating
 ){

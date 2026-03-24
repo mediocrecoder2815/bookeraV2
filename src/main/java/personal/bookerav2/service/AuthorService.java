@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.authors.AuthorDtoAll;
 import personal.bookerav2.dto.authors.AuthorDtoRequest;
 import personal.bookerav2.dto.authors.AuthorDtoResponse;
-import personal.bookerav2.dto.wrappers.AuthorWrapper;
+import personal.bookerav2.dto.wrappers.AuthorMapper;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
@@ -24,13 +24,13 @@ public class AuthorService {
 
     public AuthorDtoResponse getAuthorById(UUID id){
         Author authorToFind = authorRepository.findById(id).orElseThrow();
-        return AuthorWrapper.toResponseDto(authorToFind);
+        return AuthorMapper.toResponseDto(authorToFind);
     }
     public List<AuthorDtoAll> getAllAuthors(){
         List<Author> allAuthors = authorRepository.findAll();
         return allAuthors.
                 stream().
-                map(AuthorWrapper::toAuthorDtoAll).
+                map(AuthorMapper::toAuthorDtoAll).
                 collect(Collectors.toList());
     }
     public void deleteAuthorById(UUID id){
@@ -47,7 +47,7 @@ public class AuthorService {
         newAuthor.setDateOfBirth(a.dateOfBirth());
 
 
-        return AuthorWrapper.toResponseDto(authorRepository.save(newAuthor));
+        return AuthorMapper.toResponseDto(authorRepository.save(newAuthor));
     }
     public AuthorDtoResponse updateAuthor(AuthorDtoRequest a, UUID id){
         Author authorToUpdate = authorRepository.findById(id).orElseThrow();
@@ -56,7 +56,7 @@ public class AuthorService {
         authorToUpdate.setDescription(a.description());
         authorToUpdate.setDateOfBirth(a.dateOfBirth());
         authorToUpdate.setCountry(a.countryCode());
-        return AuthorWrapper.toResponseDto(authorRepository.save(authorToUpdate));
+        return AuthorMapper.toResponseDto(authorRepository.save(authorToUpdate));
     }
 
 

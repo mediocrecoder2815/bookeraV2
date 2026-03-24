@@ -1,14 +1,13 @@
 package personal.bookerav2.service;
 
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.books.BookDtoAll;
 import personal.bookerav2.dto.books.BookDtoRequest;
 import personal.bookerav2.dto.books.BookDtoResponse;
-import personal.bookerav2.dto.wrappers.BookWrapper;
+import personal.bookerav2.dto.wrappers.BookMapper;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Category;
@@ -33,14 +32,14 @@ public class BookService {
 
     public BookDtoResponse getBookById(UUID id){
         Book bookToFind = bookRepository.findById(id).orElseThrow();
-        return BookWrapper.toResponseDto(bookToFind);
+        return BookMapper.toResponseDto(bookToFind);
     }
     public List<BookDtoAll> getAllBooks(){
         Set<Book> books = (Set<Book>) bookRepository.findAll();
-        return BookWrapper.toBookAll(books);
+        return BookMapper.toBookAll(books);
     }
     public BookDtoResponse createBook(BookDtoRequest book){
-        Book newBook = BookWrapper.toBook(book);
+        Book newBook = BookMapper.toBook(book);
         Author author = authorRepository.findById(book.authorId()).orElseThrow();
         if(book.categoriesId().isPresent()){
             List<Category> categories = new ArrayList<>();
@@ -51,7 +50,7 @@ public class BookService {
         }
         newBook.getAuthors().add(author);
         bookRepository.save(newBook);
-        return BookWrapper.toResponseDto(newBook);
+        return BookMapper.toResponseDto(newBook);
     }
 
     public void deleteBookById(UUID id){
@@ -68,7 +67,7 @@ public class BookService {
         bookToUpdate.setTotalPages(bookRequest.totalPages());
         bookToUpdate.setDateOfPublish(bookRequest.dateOfPublish());
         bookRepository.save(bookToUpdate);
-        return BookWrapper.toResponseDto(bookToUpdate);
+        return BookMapper.toResponseDto(bookToUpdate);
     }
 
 }
