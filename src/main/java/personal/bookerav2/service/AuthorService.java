@@ -2,6 +2,7 @@ package personal.bookerav2.service;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.authors.AuthorDtoAll;
 import personal.bookerav2.dto.authors.AuthorDtoRequest;
@@ -26,12 +27,10 @@ public class AuthorService {
         Author authorToFind = authorRepository.findById(id).orElseThrow();
         return AuthorMapper.toResponseDto(authorToFind);
     }
-    public List<AuthorDtoAll> getAllAuthors(){
-        List<Author> allAuthors = authorRepository.findAll();
+    public Page<AuthorDtoAll> getAllAuthors(){
+        Page<Author> allAuthors = authorRepository.findAll();
         return allAuthors.
-                stream().
-                map(AuthorMapper::toAuthorDtoAll).
-                collect(Collectors.toList());
+                map(AuthorMapper::toAuthorDtoAll);
     }
     public void deleteAuthorById(UUID id){
         Author author = authorRepository.findById(id).orElseThrow();

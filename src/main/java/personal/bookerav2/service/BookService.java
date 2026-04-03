@@ -3,6 +3,8 @@ package personal.bookerav2.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.books.BookDtoAll;
 import personal.bookerav2.dto.books.BookDtoRequest;
@@ -15,10 +17,8 @@ import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.CategoryRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.rmi.server.LogStream.log;
 
@@ -34,10 +34,12 @@ public class BookService {
         Book bookToFind = bookRepository.findById(id).orElseThrow();
         return BookMapper.toResponseDto(bookToFind);
     }
-    public List<BookDtoAll> getAllBooks(){
-        Set<Book> books = (Set<Book>) bookRepository.findAll();
-        return BookMapper.toBookAll(books);
+
+    public Page<BookDtoAll> getAllBooks(Pageable page){
+        Page<Book> books = bookRepository.findAll(page);
+        return books.map(BookMapper::toAllBookDto);
     }
+
     public BookDtoResponse createBook(BookDtoRequest book){
         Book newBook = BookMapper.toBook(book);
         Author author = authorRepository.findById(book.authorId()).orElseThrow();
@@ -46,7 +48,7 @@ public class BookService {
             for(Long l : book.categoriesId().get()){
                 categories.add(categoryRepository.findById(l).orElseThrow());
             }
-            newBook.setCategories((Set<Category>) categories);
+            newBook.setCategories(new HashSet<>(categories));
         }
         newBook.getAuthors().add(author);
         bookRepository.save(newBook);
@@ -61,9 +63,9 @@ public class BookService {
 
     public BookDtoResponse updateBook(BookDtoRequest bookRequest, UUID bookId){
         Book bookToUpdate = bookRepository.findById(bookId).orElseThrow();
-        bookToUpdate.setName(bookToUpdate.getName());
-        bookToUpdate.setIsbn(bookToUpdate.getIsbn());
-        bookToUpdate.setDescription(bookToUpdate.getDescription());
+        bookToUpdate.setName(bookRequest.name());
+        bookToUpdate.setIsbn(bookRequest.isbn());
+        bookToUpdate.setDescription(bookRequest.description());
         bookToUpdate.setTotalPages(bookRequest.totalPages());
         bookToUpdate.setDateOfPublish(bookRequest.dateOfPublish());
         bookRepository.save(bookToUpdate);

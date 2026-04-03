@@ -7,6 +7,7 @@ import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -29,6 +30,12 @@ public class AuthorMapper {
         return new AuthorDtoAll(a.getAuthorId(),
                                 a.getName(),
                                 a.getSurname());
+    }
+    public static List<AuthorDtoAll> toAuthorDtoList(List<Author> authors){
+        return authors
+                .stream()
+                .map(AuthorMapper::toAuthorDtoAll)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public static AuthorBookDto toAuthorBookDto(Book book){

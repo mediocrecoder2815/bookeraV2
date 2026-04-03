@@ -37,7 +37,7 @@ public class BookMapper {
         return books.stream().map(BookMapper::toAllBookDto).toList();
     }
 
-    private static BookDtoAll toAllBookDto(Book book){
+    public static BookDtoAll toAllBookDto(Book book){
         return new BookDtoAll(book.getBookId(), book.getName(), book.getPictureUrl());
     }
     private static BookAuthorDto toAuthorDto(Author author){

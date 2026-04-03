@@ -31,7 +31,8 @@ public class CategoryService {
             throw new IllegalArgumentException("CATEGORY ALREADY EXISTS");
         }
         c.setCategoryName(name);
-        return c;
+        return categoryRepository.save(c);
+
     }
     public Category getCategoryById(Long id){
         return categoryRepository.findById(id).orElseThrow();
