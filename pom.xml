@@ -8,9 +8,9 @@
         <version>4.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>cvut.dsva.sem</groupId>
+    <groupId>personal.bookera</groupId>
     <artifactId>bookeraV2</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>bookeraV2</name>
     <description>bookeraV2</description>
     <url/>
@@ -54,7 +54,6 @@
 <!--            <groupId>org.flywaydb</groupId>-->
 <!--            <artifactId>flyway-database-postgresql</artifactId>-->
 <!--        </dependency>-->
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

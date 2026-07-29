@@ -11,7 +11,7 @@ public record BookDtoRequest(
         Integer totalPages,
         String description,
         Instant dateOfPublish,
-        UUID authorId,
-        Optional<Set<Long>> categoriesId
+        Integer authorId,
+        Optional<Set<Integer>> categoriesId
 ) {
 }

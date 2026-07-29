@@ -8,6 +8,6 @@ import personal.bookerav2.entities.Book;
 import java.util.UUID;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, UUID> {
+public interface BookRepository extends JpaRepository<Book, Integer> {
 }
 

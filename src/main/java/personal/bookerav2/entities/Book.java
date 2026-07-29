@@ -58,4 +58,19 @@ public class Book {
     @Column(name = "picture_url", nullable = true)
     String pictureUrl;
 
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookId=" + bookId +
+                ", name='" + name + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", totalPages=" + totalPages +
+                ", description='" + description + '\'' +
+                ", dateOfPublish=" + dateOfPublish +
+                ", authors=" + authors +
+                ", categories=" + categories +
+                ", reviews=" + reviews +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                '}';
+    }
 }

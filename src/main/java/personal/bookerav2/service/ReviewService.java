@@ -22,7 +22,7 @@ public class ReviewService{
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    public ReviewDtoResponse createReview(ReviewDtoRequest r, UUID bookId){
+    public ReviewDtoResponse createReview(ReviewDtoRequest r, Integer bookId){
         Review review = new Review();
         Book bookToFind = bookRepository.findById(bookId).orElseThrow();
         User userToFind = userRepository.findById(r.userId()).orElseThrow();
@@ -32,17 +32,17 @@ public class ReviewService{
         review.setRating(r.rating());
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
-    public ReviewDtoResponse updateReview(ReviewDtoRequest r, UUID reviewId){
+    public ReviewDtoResponse updateReview(ReviewDtoRequest r, Long reviewId){
         Review review = reviewRepository.findById(reviewId).orElseThrow();
         review.setRating(r.rating());
         review.setContent(r.content());
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
-    public void deleteReview(UUID id){
+    public void deleteReview(Long id){
         Review r = reviewRepository.findById(id).orElseThrow();
         reviewRepository.delete(r);
     }
-    public ReviewDtoResponse getReviewById(UUID id){
+    public ReviewDtoResponse getReviewById(Long id){
         return ReviewMapper.toReviewDtoResponse(reviewRepository.findById(id).orElseThrow());
     }
 }

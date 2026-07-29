@@ -23,7 +23,7 @@ public class AuthorService {
     private final BookRepository bookRepository;
 
 
-    public AuthorDtoResponse getAuthorById(UUID id){
+    public AuthorDtoResponse getAuthorById(Integer id){
         Author authorToFind = authorRepository.findById(id).orElseThrow();
         return AuthorMapper.toResponseDto(authorToFind);
     }
@@ -32,7 +32,7 @@ public class AuthorService {
         return allAuthors.
                 map(AuthorMapper::toAuthorDtoAll);
     }
-    public void deleteAuthorById(UUID id){
+    public void deleteAuthorById(Integer id){
         Author author = authorRepository.findById(id).orElseThrow();
         authorRepository.delete(author);
     }
@@ -48,7 +48,7 @@ public class AuthorService {
 
         return AuthorMapper.toResponseDto(authorRepository.save(newAuthor));
     }
-    public AuthorDtoResponse updateAuthor(AuthorDtoRequest a, UUID id){
+    public AuthorDtoResponse updateAuthor(AuthorDtoRequest a, Integer id){
         Author authorToUpdate = authorRepository.findById(id).orElseThrow();
         authorToUpdate.setName(a.name());
         authorToUpdate.setSurname(a.surname());

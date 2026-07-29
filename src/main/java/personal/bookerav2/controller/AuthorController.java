@@ -13,9 +13,6 @@ import personal.bookerav2.dto.authors.AuthorDtoRequest;
 import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.service.AuthorService;
 
-import java.util.UUID;
-
-
 @RestController
 @RequestMapping("/api/authors")
 @AllArgsConstructor
@@ -35,7 +32,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuthorDtoResponse> getAuthorById(@PathVariable UUID id){
+    public ResponseEntity<AuthorDtoResponse> getAuthorById(@PathVariable Integer id){
         return ResponseEntity.ok(authorService.getAuthorById(id));
     }
 
@@ -45,13 +42,13 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteAuthor(@PathVariable UUID id){
+    public boolean deleteAuthor(@PathVariable Integer id){
         authorService.deleteAuthorById(id);
         return true;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDtoResponse> updateAuthor(@PathVariable UUID id, @RequestBody AuthorDtoRequest author){
+    public ResponseEntity<AuthorDtoResponse> updateAuthor(@PathVariable Integer id, @RequestBody AuthorDtoRequest author){
         return ResponseEntity.ok(authorService.updateAuthor(author, id));
     }
 

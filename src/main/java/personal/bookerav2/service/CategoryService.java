@@ -21,11 +21,11 @@ public class CategoryService {
         c.setCategoryName(category.getCategoryName());
         return categoryRepository.save(c);
     }
-    public void deleteCategoryById(Long id){
+    public void deleteCategoryById(Integer id){
         Category c = categoryRepository.findById(id).orElseThrow();
         categoryRepository.delete(c);
     }
-    public Category updateCategory(Long id, String name){
+    public Category updateCategory(Integer id, String name){
         Category c = categoryRepository.findById(id).orElseThrow();
         if (categoryRepository.findByCategoryName(name).isPresent()){
             throw new IllegalArgumentException("CATEGORY ALREADY EXISTS");
@@ -34,7 +34,7 @@ public class CategoryService {
         return categoryRepository.save(c);
 
     }
-    public Category getCategoryById(Long id){
+    public Category getCategoryById(Integer id){
         return categoryRepository.findById(id).orElseThrow();
     }
     public List<Category> getAllCategories(){

@@ -8,8 +8,6 @@ import personal.bookerav2.dto.reviews.ReviewDtoRequest;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.service.ReviewService;
 
-import java.util.UUID;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/reviews")
@@ -17,15 +15,15 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/{bookId}")
-    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable UUID bookId, @RequestBody ReviewDtoRequest reviewDto){
+    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable Integer bookId, @RequestBody ReviewDtoRequest reviewDto){
         return ResponseEntity.ok(reviewService.createReview(reviewDto, bookId));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable UUID id, @RequestBody ReviewDtoRequest review){
+    public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable Long id, @RequestBody ReviewDtoRequest review){
         return ResponseEntity.ok(reviewService.updateReview(review, id));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReview(@PathVariable UUID id){
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id){
         reviewService.deleteReview(id);
         return ResponseEntity.ok().build();
     }
