@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public record AuthorDtoResponse(
-        UUID authorId,
+        Integer authorId,
         String name,
         String surname,
         String description,

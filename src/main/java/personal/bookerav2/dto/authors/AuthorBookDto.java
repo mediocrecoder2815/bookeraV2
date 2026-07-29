@@ -3,7 +3,7 @@ package personal.bookerav2.dto.authors;
 import java.util.UUID;
 
 public record AuthorBookDto (
-        UUID bookId,
+        Integer bookId,
         String name,
         String isbn
 ){

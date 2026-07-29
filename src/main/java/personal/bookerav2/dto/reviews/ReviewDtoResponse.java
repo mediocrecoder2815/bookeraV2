@@ -3,9 +3,9 @@ package personal.bookerav2.dto.reviews;
 import java.util.UUID;
 
 public record ReviewDtoResponse(
-        UUID reviewId,
+        Long reviewId,
         UUID userId,
-        UUID bookId,
+        Integer bookId,
         String content,
         Integer rating
 ) {

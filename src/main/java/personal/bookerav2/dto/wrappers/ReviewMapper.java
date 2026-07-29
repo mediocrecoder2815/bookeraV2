@@ -11,8 +11,8 @@ public class ReviewMapper {
     public static ReviewDtoResponse toReviewDtoResponse(Review r){
         return new ReviewDtoResponse(
                 r.getReviewId(),
-                r.getBook().getBookId(),
                 r.getUser().getUserId(),
+                r.getBook().getBookId(),
                 r.getContent(),
                 r.getRating()
         );

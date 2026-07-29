@@ -13,9 +13,9 @@ import lombok.*;
 @AllArgsConstructor
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "category_id")
-    Long categoryId;
+    Integer categoryId;
 
     @Column(name = "category_name", nullable = false, length = 20, unique = true)
     String categoryName;

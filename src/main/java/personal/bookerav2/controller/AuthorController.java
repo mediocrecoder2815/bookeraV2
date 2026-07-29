@@ -13,9 +13,10 @@ import personal.bookerav2.dto.authors.AuthorDtoRequest;
 import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.service.AuthorService;
 
-import java.util.List;
 import java.util.UUID;
 
+
+@RestController
 @RequestMapping("/api/authors")
 @AllArgsConstructor
 public class AuthorController {

@@ -16,6 +16,8 @@ import personal.bookerav2.service.BookService;
 import java.util.List;
 import java.util.UUID;
 
+
+@RestController
 @RequestMapping("/api/books")
 @AllArgsConstructor
 public class BookController {

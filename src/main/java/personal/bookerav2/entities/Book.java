@@ -17,9 +17,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "book_id")
-    UUID bookId;
+    Integer bookId;
 
     @Column(name = "name", nullable = false, length = 50)
     String name;

@@ -28,7 +28,7 @@ public class AuthorService {
         return AuthorMapper.toResponseDto(authorToFind);
     }
     public Page<AuthorDtoAll> getAllAuthors(){
-        Page<Author> allAuthors = authorRepository.findAll();
+        Page<Author> allAuthors = (Page<Author>) authorRepository.findAll();
         return allAuthors.
                 map(AuthorMapper::toAuthorDtoAll);
     }

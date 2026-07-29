@@ -7,8 +7,9 @@ import personal.bookerav2.entities.Category;
 import personal.bookerav2.service.CategoryService;
 
 import java.util.List;
-import java.util.Set;
 
+
+@RestController
 @RequestMapping("/api/categories")
 @AllArgsConstructor
 public class CategoryController {

@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public record BookDtoResponse (
-        UUID bookId,
+        Integer bookId,
         String name,
         String isbn,
         Integer totalPages,

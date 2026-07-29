@@ -18,9 +18,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "author_id")
-    UUID authorId;
+    Integer authorId;
 
     @Column(name = "name", nullable = false, length = 25)
     String name;
