@@ -18,11 +18,11 @@ import personal.bookerav2.service.BookService;
 public class BookController {
     private final BookService bookService;
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<Page<BookDtoAll>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "bookId") String sortBy,
             @RequestParam(defaultValue = "true") boolean ascending)
     {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();

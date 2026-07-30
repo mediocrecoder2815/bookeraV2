@@ -13,7 +13,7 @@ import personal.bookerav2.dto.wrappers.BookMapper;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Category;
-import personal.bookerav2.exceptions.BookNotFound;
+import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.CategoryRepository;
@@ -30,7 +30,7 @@ public class BookService {
     private final CategoryRepository categoryRepository;
 
     public BookDtoResponse getBookById(Integer id){
-        Book bookToFind = bookRepository.findById(id).orElseThrow();
+        Book bookToFind = findById(id);
         return BookMapper.toResponseDto(bookToFind);
     }
 
@@ -42,12 +42,15 @@ public class BookService {
 
     public BookDtoResponse createBook(BookDtoRequest book){
         Book newBook = BookMapper.toBook(book);
-        Author author = authorRepository.findById(book.authorId()).orElseThrow();
-        log.info("Tryting to create book: {}", newBook);
+        Author author = authorRepository.findById(book.authorId())
+                .orElseThrow(() -> new ResourceNotFound("Author with id " + book.authorId() + " not found!" ));
+        log.info("Trying to create book: {}", newBook);
         if(book.categoriesId().isPresent()){
             List<Category> categories = new ArrayList<>();
             for(Integer id : book.categoriesId().get()){
-                categories.add(categoryRepository.findById(id).orElseThrow());
+                categories.add(categoryRepository.findById(id).orElseThrow(
+                        () -> new ResourceNotFound("Category with id " + id + " not found")
+                ));
             }
             newBook.setCategories(new HashSet<>(categories));
         }
@@ -58,14 +61,15 @@ public class BookService {
     }
 
     public void deleteBookById(Integer id){
-        Book bookToDelete = bookRepository.findById(id).orElseThrow();
+
+        Book bookToDelete = findById(id);
         log.info("Deleting book with id: {}", id);
         bookRepository.delete(bookToDelete);
         log.info("Book with id {} | was deleted", id);
     }
 
     public BookDtoResponse updateBook(BookDtoRequest bookRequest, Integer bookId){
-        Book bookToUpdate = bookRepository.findById(bookId).orElseThrow();
+        Book bookToUpdate = findById(bookId);
         bookToUpdate.setName(bookRequest.name());
         bookToUpdate.setIsbn(bookRequest.isbn());
         bookToUpdate.setDescription(bookRequest.description());
@@ -75,4 +79,9 @@ public class BookService {
         return BookMapper.toResponseDto(bookToUpdate);
     }
 
+    private Book findById(int id){
+        return bookRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
+
+    }
 }

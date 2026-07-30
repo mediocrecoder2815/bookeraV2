@@ -3,12 +3,14 @@ package personal.bookerav2.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.authors.AuthorDtoAll;
 import personal.bookerav2.dto.authors.AuthorDtoRequest;
 import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.dto.wrappers.AuthorMapper;
 import personal.bookerav2.entities.Author;
+import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 
@@ -24,16 +26,15 @@ public class AuthorService {
 
 
     public AuthorDtoResponse getAuthorById(Integer id){
-        Author authorToFind = authorRepository.findById(id).orElseThrow();
+        Author authorToFind = findById(id);
         return AuthorMapper.toResponseDto(authorToFind);
     }
-    public Page<AuthorDtoAll> getAllAuthors(){
-        Page<Author> allAuthors = (Page<Author>) authorRepository.findAll();
-        return allAuthors.
-                map(AuthorMapper::toAuthorDtoAll);
+    public Page<AuthorDtoAll> getAllAuthors(Pageable pageable){
+        return authorRepository.findAll(pageable)
+                .map(AuthorMapper::toAuthorDtoAll);
     }
     public void deleteAuthorById(Integer id){
-        Author author = authorRepository.findById(id).orElseThrow();
+        Author author = findById(id);
         authorRepository.delete(author);
     }
 
@@ -49,7 +50,7 @@ public class AuthorService {
         return AuthorMapper.toResponseDto(authorRepository.save(newAuthor));
     }
     public AuthorDtoResponse updateAuthor(AuthorDtoRequest a, Integer id){
-        Author authorToUpdate = authorRepository.findById(id).orElseThrow();
+        Author authorToUpdate = findById(id);
         authorToUpdate.setName(a.name());
         authorToUpdate.setSurname(a.surname());
         authorToUpdate.setDescription(a.description());
@@ -58,5 +59,8 @@ public class AuthorService {
         return AuthorMapper.toResponseDto(authorRepository.save(authorToUpdate));
     }
 
-
+    private Author findById(int id){
+        return authorRepository.findById(id).orElseThrow
+                (() -> new ResourceNotFound("Author with id :" + id + " doesn't exists"));
+    }
 }

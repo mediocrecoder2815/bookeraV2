@@ -9,6 +9,7 @@ import personal.bookerav2.dto.wrappers.ReviewMapper;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Review;
 import personal.bookerav2.entities.User;
+import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.ReviewRepository;
 import personal.bookerav2.repository.UserRepository;
@@ -24,8 +25,8 @@ public class ReviewService{
 
     public ReviewDtoResponse createReview(ReviewDtoRequest r, Integer bookId){
         Review review = new Review();
-        Book bookToFind = bookRepository.findById(bookId).orElseThrow();
-        User userToFind = userRepository.findById(r.userId()).orElseThrow();
+        Book bookToFind = findBookById(bookId);
+        User userToFind = findUserById(r.userId());
         review.setContent(r.content());
         review.setBook(bookToFind);
         review.setUser(userToFind);
@@ -33,16 +34,33 @@ public class ReviewService{
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
     public ReviewDtoResponse updateReview(ReviewDtoRequest r, Long reviewId){
-        Review review = reviewRepository.findById(reviewId).orElseThrow();
+        Review review = findReviewById(reviewId);
         review.setRating(r.rating());
         review.setContent(r.content());
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
     public void deleteReview(Long id){
-        Review r = reviewRepository.findById(id).orElseThrow();
+        Review r = findReviewById(id);
         reviewRepository.delete(r);
     }
     public ReviewDtoResponse getReviewById(Long id){
-        return ReviewMapper.toReviewDtoResponse(reviewRepository.findById(id).orElseThrow());
+        return ReviewMapper.toReviewDtoResponse(findReviewById(id));
+    }
+
+    private Book findBookById(int id){
+        return bookRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFound("Book with id + " + id + " doesn't exists")
+        );
+    }
+    private User findUserById(UUID id){
+        return userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFound("User with id " + id + " doesn't exists")
+        );
+    }
+
+    private Review findReviewById(long id){
+        return reviewRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFound("Review with id " + id + " doesn't exists")
+        );
     }
 }
