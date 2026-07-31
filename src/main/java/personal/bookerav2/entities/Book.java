@@ -17,7 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(initialValue = 100)
     @Column(name = "book_id")
     Integer bookId;
 
@@ -53,7 +54,7 @@ public class Book {
     Set<Category> categories = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
-    Set<Review> reviews;
+    Set<Review> reviews = new HashSet<>();
 
     @Column(name = "picture_url", nullable = true)
     String pictureUrl;

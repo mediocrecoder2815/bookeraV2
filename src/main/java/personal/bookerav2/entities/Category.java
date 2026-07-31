@@ -13,7 +13,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(initialValue = 100)
     @Column(name = "category_id")
     Integer categoryId;
 
