@@ -42,6 +42,7 @@ public class AuthorMapper {
         return new AuthorBookDto(
                 book.getBookId(),
                 book.getName(),
+                book.getPictureUrl(),
                 book.getIsbn()
         );
     }

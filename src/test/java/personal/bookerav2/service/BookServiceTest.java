@@ -85,6 +85,7 @@ class BookServiceTest {
                 "Dystopian novel",
                 Instant.parse("1949-06-08T00:00:00Z"),
                 1,
+                "example.org/author_picture",
                 Optional.empty()
         );
 
@@ -95,6 +96,7 @@ class BookServiceTest {
                 "Dystopian novel",
                 Instant.parse("1949-06-08T00:00:00Z"),
                 1,
+                "picture",
                 Optional.of(new HashSet<>(Set.of(1)))
         );
     }

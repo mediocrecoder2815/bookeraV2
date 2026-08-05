@@ -6,6 +6,7 @@ import lombok.*;
 import personal.bookerav2.entities.enums.CountryCode;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,7 +34,7 @@ public class Author {
     String description;
 
     @ManyToMany(mappedBy = "authors")
-    Set<Book> books;
+    Set<Book> books = new HashSet<>();
 
     @Column(name = "date_of_birth")
     Instant dateOfBirth;

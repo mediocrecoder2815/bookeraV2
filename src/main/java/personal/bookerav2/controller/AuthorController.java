@@ -1,6 +1,7 @@
 package personal.bookerav2.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +39,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<AuthorDtoResponse> createAuthor(@RequestBody AuthorDtoRequest newAuthor){
+    public ResponseEntity<AuthorDtoResponse> createAuthor(@RequestBody @Valid AuthorDtoRequest newAuthor){
         return ResponseEntity.ok(authorService.createAuthor(newAuthor));
     }
 
@@ -49,7 +50,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorDtoResponse> updateAuthor(@PathVariable Integer id, @RequestBody AuthorDtoRequest author){
+    public ResponseEntity<AuthorDtoResponse> updateAuthor(@PathVariable Integer id, @Valid @RequestBody AuthorDtoRequest author){
         return ResponseEntity.ok(authorService.updateAuthor(author, id));
     }
 

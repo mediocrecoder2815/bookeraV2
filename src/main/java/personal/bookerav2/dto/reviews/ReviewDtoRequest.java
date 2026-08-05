@@ -1,11 +1,14 @@
 package personal.bookerav2.dto.reviews;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.UUID;
 
 public record ReviewDtoRequest(
-        String content,
-        UUID userId,
-        Integer rating
+        @NotBlank String content,
+        @NotNull UUID userId,
+        @NotNull Integer rating
 ){
     public ReviewDtoRequest{
         if(rating > 5 || rating < 0){

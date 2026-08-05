@@ -1,6 +1,7 @@
 package personal.bookerav2.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,11 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/{bookId}")
-    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable Integer bookId, @RequestBody ReviewDtoRequest reviewDto){
+    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable Integer bookId, @RequestBody @Valid ReviewDtoRequest reviewDto){
         return ResponseEntity.ok(reviewService.createReview(reviewDto, bookId));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable Long id, @RequestBody ReviewDtoRequest review){
+    public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable Long id, @RequestBody @Valid ReviewDtoRequest review){
         return ResponseEntity.ok(reviewService.updateReview(review, id));
     }
     @DeleteMapping("/{id}")

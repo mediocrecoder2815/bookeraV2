@@ -1,11 +1,9 @@
 package personal.bookerav2.dto.books;
 
 import personal.bookerav2.dto.reviews.ReviewBookDto;
-import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.entities.Category;
 
 import java.util.Set;
-import java.util.UUID;
 
 public record BookDtoResponse (
         Integer bookId,

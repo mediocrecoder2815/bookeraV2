@@ -1,10 +1,12 @@
 package personal.bookerav2.dto.books;
 
-import java.util.UUID;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record BookAuthorDto(
-        Integer authorId,
-        String name,
-        String surname
+        @NotBlank Integer authorId,
+        @NotBlank @Size(max = 50) String name,
+        @NotBlank @Size(max = 50)String surname
 ) {
 }

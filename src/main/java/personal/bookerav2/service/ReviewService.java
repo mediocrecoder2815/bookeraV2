@@ -3,6 +3,7 @@ package personal.bookerav2.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import personal.bookerav2.dto.reviews.ReviewDtoRequest;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.dto.wrappers.ReviewMapper;
@@ -23,6 +24,7 @@ public class ReviewService{
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
+    @Transactional
     public ReviewDtoResponse createReview(ReviewDtoRequest r, Integer bookId){
         Review review = new Review();
         Book bookToFind = findBookById(bookId);
@@ -33,6 +35,7 @@ public class ReviewService{
         review.setRating(r.rating());
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
+    @Transactional
     public ReviewDtoResponse updateReview(ReviewDtoRequest r, Long reviewId){
         Review review = findReviewById(reviewId);
         review.setRating(r.rating());

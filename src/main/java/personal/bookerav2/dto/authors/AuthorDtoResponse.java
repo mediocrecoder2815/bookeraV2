@@ -1,17 +1,18 @@
 package personal.bookerav2.dto.authors;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import personal.bookerav2.entities.enums.CountryCode;
 
 import java.time.Instant;
 import java.util.Set;
-import java.util.UUID;
 
 public record AuthorDtoResponse(
-        Integer authorId,
-        String name,
-        String surname,
+        @NotBlank Integer authorId,
+        @NotBlank @Size(max = 50) String name,
+        @NotBlank @Size(max = 50) String surname,
         String description,
-        CountryCode countryCode,
+        @Size(max = 3) CountryCode countryCode,
         Instant dateOfBirth,
         Set<AuthorBookDto> books
 ) {

@@ -50,9 +50,6 @@ public class CategoryService {
         );
     }
 
-
-
-
     private Category findById(int id){
         return categoryRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFound("Category with id " + id + "doesn't exists")

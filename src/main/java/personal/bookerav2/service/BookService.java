@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import personal.bookerav2.dto.books.BookDtoAll;
 import personal.bookerav2.dto.books.BookDtoRequest;
 import personal.bookerav2.dto.books.BookDtoResponse;
@@ -17,6 +18,7 @@ import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.CategoryRepository;
+import personal.bookerav2.repository.UserRepository;
 
 import java.util.*;
 
@@ -28,6 +30,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     public BookDtoResponse getBookById(Integer id){
         Book bookToFind = findById(id);
@@ -40,6 +43,7 @@ public class BookService {
         return books.map(BookMapper::toAllBookDto);
     }
 
+    @Transactional
     public BookDtoResponse createBook(BookDtoRequest book){
         Book newBook = BookMapper.toBook(book);
         Author author = authorRepository.findById(book.authorId())
@@ -61,13 +65,22 @@ public class BookService {
     }
 
     public void deleteBookById(Integer id){
-
         Book bookToDelete = findById(id);
         log.info("Deleting book with id: {}", id);
+        authorRepository.findByBooks_BookId(id).forEach(
+                a -> a.getBooks().remove(bookToDelete)
+        );
+        userRepository.findByBooks_bookId(id).forEach(
+                u -> u.getBooks().remove(bookToDelete)
+        );
+
         bookRepository.delete(bookToDelete);
         log.info("Book with id {} | was deleted", id);
     }
 
+
+
+    @Transactional
     public BookDtoResponse updateBook(BookDtoRequest bookRequest, Integer bookId){
         Book bookToUpdate = findById(bookId);
         bookToUpdate.setName(bookRequest.name());

@@ -6,7 +6,6 @@ import lombok.*;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "books")
@@ -53,8 +52,11 @@ public class Book {
     )
     Set<Category> categories = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
+    @OneToMany(mappedBy = "book",
+                cascade = CascadeType.ALL,
+                orphanRemoval = true)
     Set<Review> reviews = new HashSet<>();
+
 
     @Column(name = "picture_url", nullable = true)
     String pictureUrl;
@@ -74,4 +76,5 @@ public class Book {
                 ", pictureUrl='" + pictureUrl + '\'' +
                 '}';
     }
+
 }

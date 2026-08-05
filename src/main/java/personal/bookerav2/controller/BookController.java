@@ -1,5 +1,6 @@
 package personal.bookerav2.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +36,7 @@ public class BookController {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
     @PostMapping
-    public ResponseEntity<BookDtoResponse> addBook(@RequestBody BookDtoRequest book){
+    public ResponseEntity<BookDtoResponse> addBook(@RequestBody @Valid BookDtoRequest book){
         return ResponseEntity.ok(bookService.createBook(book));
     }
     @DeleteMapping("/{id}")
@@ -44,7 +45,7 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
     @PutMapping("/{id}")
-    public ResponseEntity<BookDtoResponse> updateBook(@PathVariable Integer id, @RequestBody BookDtoRequest newBook){
+    public ResponseEntity<BookDtoResponse> updateBook(@PathVariable Integer id, @RequestBody @Valid BookDtoRequest newBook){
         return ResponseEntity.ok(bookService.updateBook(newBook, id));
     }
 
