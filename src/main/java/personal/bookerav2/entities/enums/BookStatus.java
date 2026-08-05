@@ -7,7 +7,7 @@ public enum BookStatus {
     IN_PLANS("In plans");
     private final String status;
 
-    private BookStatus(String status){
+    BookStatus(String status){
         this.status = status;
     }
     public String getStatus(){

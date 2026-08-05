@@ -17,7 +17,7 @@ import java.util.Set;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(initialValue = 100)
+    @SequenceGenerator(initialValue = 6)
     @Column(name = "book_id")
     Integer bookId;
 

@@ -13,6 +13,7 @@ import personal.bookerav2.dto.wrappers.AuthorMapper;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.User;
+import personal.bookerav2.entities.enums.CountryCode;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
@@ -61,8 +62,9 @@ public class AuthorService {
         Author newAuthor = new Author();
         newAuthor.setName(a.name());
         newAuthor.setSurname(a.surname());
+        newAuthor.setPictureUrl(a.pictureUrl());
         newAuthor.setDescription(a.description());
-        newAuthor.setCountry(a.countryCode());
+        newAuthor.setCountry(CountryCode.convert(a.countryCode()));
         newAuthor.setDateOfBirth(a.dateOfBirth());
         return AuthorMapper.toResponseDto(authorRepository.save(newAuthor));
     }
@@ -74,7 +76,7 @@ public class AuthorService {
         authorToUpdate.setSurname(a.surname());
         authorToUpdate.setDescription(a.description());
         authorToUpdate.setDateOfBirth(a.dateOfBirth());
-        authorToUpdate.setCountry(a.countryCode());
+        authorToUpdate.setCountry(CountryCode.convert(a.countryCode()));
         return AuthorMapper.toResponseDto(authorRepository.save(authorToUpdate));
     }
 

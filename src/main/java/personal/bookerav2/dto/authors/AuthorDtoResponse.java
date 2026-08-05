@@ -14,6 +14,7 @@ public record AuthorDtoResponse(
         String description,
         @Size(max = 3) CountryCode countryCode,
         Instant dateOfBirth,
+        String pictureUrl,
         Set<AuthorBookDto> books
 ) {
 }

@@ -20,6 +20,7 @@ public class AuthorMapper {
                 author.getDescription(),
                 author.getCountry(),
                 author.getDateOfBirth(),
+                author.getPictureUrl(),
                 author.getBooks().
                         stream().
                         map(AuthorMapper::toAuthorBookDto).
@@ -35,7 +36,7 @@ public class AuthorMapper {
         return authors
                 .stream()
                 .map(AuthorMapper::toAuthorDtoAll)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     public static AuthorBookDto toAuthorBookDto(Book book){

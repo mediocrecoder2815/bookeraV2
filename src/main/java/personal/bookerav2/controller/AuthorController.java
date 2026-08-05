@@ -24,7 +24,7 @@ public class AuthorController {
     @GetMapping
     public ResponseEntity<Page<AuthorDtoAll>> getAllAuthors(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "authorId") String sortBy,
             @RequestParam(defaultValue = "true") boolean ascending)
     {

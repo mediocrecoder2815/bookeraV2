@@ -14,7 +14,7 @@ import lombok.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(initialValue = 100)
+    @SequenceGenerator(initialValue = 6)
     @Column(name = "category_id")
     Integer categoryId;
 

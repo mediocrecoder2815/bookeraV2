@@ -1,10 +1,13 @@
 package personal.bookerav2.handlers;
 
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import personal.bookerav2.exceptions.ResourceDuplicateException;
 import personal.bookerav2.exceptions.ResourceNotFound;
+
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -22,7 +25,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceDuplicateException.class)
     public ProblemDetail handleDuplicate(ResourceDuplicateException rde) {
         ProblemDetail pd = ProblemDetail.forStatus(DUPLICATE_FOUND);
+
         pd.setDetail(rde.getLocalizedMessage());
         return pd;
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleInvalidRequest(MethodArgumentNotValidException manve){
+        ProblemDetail pd = ProblemDetail.forStatus(400);
+        pd.setDetail(manve.getBindingResult().getFieldErrors().stream()
+                    .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                    .collect(Collectors.joining("; ")));
+            return pd;
+        }
 }
