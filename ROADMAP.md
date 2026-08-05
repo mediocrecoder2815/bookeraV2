@@ -14,11 +14,11 @@ reviews) becomes core functionality — nothing gets cut.
 - [x] Fix `POST /api/authors` → 500: NPE in `AuthorMapper.toResponseDto` because
       `Author.books` is never initialized (`Author.java:36`). Initialize it or null-guard the mapper
 - [x] `pictureUrl`: add to `BookDtoRequest`/`AuthorDtoRequest` + mappers; persist on create **and** update
-- [ ] Add `@Valid` + `@NotBlank`/`@NotNull`/`@Size` to all request DTOs; missing required fields → 400
-- [ ] Handle `DataIntegrityViolationException` → 409 in `GlobalExceptionHandler` (FK-constrained deletes currently 500)
-- [ ] Validate query params — whitelist `sortBy` columns, reject negative `page` → 400
-- [ ] Tests for the error handler: 400 / 404 / 409 paths (only service-layer Mockito tests exist today)
-- [ ] Remove unused imports / compile warnings
+- [x] Add `@Valid` + `@NotBlank`/`@NotNull`/`@Size` to all request DTOs; missing required fields → 400
+- [x] Handle `DataIntegrityViolationException` → 409 in `GlobalExceptionHandler` (FK-constrained deletes currently 500)
+- [x] Validate query params — whitelist `sortBy` columns, reject negative `page` → 400
+- [x] Tests for the error handler: 400 / 404 / 409 paths (only service-layer Mockito tests exist today)
+- [x] Remove unused imports / compile warnings
 
 ## Phase 1 — DB safety + observability
 

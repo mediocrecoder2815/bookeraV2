@@ -1,19 +1,20 @@
 package personal.bookerav2.dto.authors;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import personal.bookerav2.entities.enums.CountryCode;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 public record AuthorDtoResponse(
-        @NotBlank Integer authorId,
+        @NotNull Long authorId,
         @NotBlank @Size(max = 50) String name,
         @NotBlank @Size(max = 50) String surname,
         String description,
         @Size(max = 3) CountryCode countryCode,
-        Instant dateOfBirth,
+        LocalDate dateOfBirth,
         String pictureUrl,
         Set<AuthorBookDto> books
 ) {

@@ -58,21 +58,21 @@ class ReviewServiceTest {
         user.setAvatarUrl("http://avatar.url");
 
         book = new Book();
-        book.setBookId(1);
+        book.setBookId(1L);
         book.setName("Test Book");
         book.setReviews(new HashSet<>());
 
         review = new Review();
         review.setReviewId(1L);
         review.setContent("Great book");
-        review.setRating(5);
+        review.setRating((short) 5);
         review.setBook(book);
         review.setUser(user);
 
         reviewDtoRequest = new ReviewDtoRequest(
                 "Great book",
                 userId,
-                5
+                (short) 5
         );
     }
 
@@ -82,21 +82,21 @@ class ReviewServiceTest {
 
         @Test
         void shouldCreateReviewSuccessfully() {
-            when(bookRepository.findById(1)).thenReturn(Optional.of(book));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
             when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
             try (var mapper = mockStatic(ReviewMapper.class)) {
                 ReviewDtoResponse expected = new ReviewDtoResponse(
-                        1L, user.getUserId(), 1, "Great book", 5
+                        1L, user.getUserId(), 1L, "Great book", (short) 5
                 );
                 mapper.when(() -> ReviewMapper.toReviewDtoResponse(any(Review.class))).thenReturn(expected);
 
-                ReviewDtoResponse result = reviewService.createReview(reviewDtoRequest, 1);
+                ReviewDtoResponse result = reviewService.createReview(reviewDtoRequest, 1L);
 
                 assertNotNull(result);
                 assertEquals(expected, result);
-                verify(bookRepository).findById(1);
+                verify(bookRepository).findById(1L);
                 verify(userRepository).findById(user.getUserId());
                 verify(reviewRepository).save(any(Review.class));
             }
@@ -104,19 +104,19 @@ class ReviewServiceTest {
 
         @Test
         void shouldThrowWhenBookNotFound() {
-            when(bookRepository.findById(99)).thenReturn(Optional.empty());
+            when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFound.class,
-                    () -> reviewService.createReview(reviewDtoRequest, 99));
+                    () -> reviewService.createReview(reviewDtoRequest, 99L));
         }
 
         @Test
         void shouldThrowWhenUserNotFound() {
-            when(bookRepository.findById(1)).thenReturn(Optional.of(book));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFound.class,
-                    () -> reviewService.createReview(reviewDtoRequest, 1));
+                    () -> reviewService.createReview(reviewDtoRequest, 1L));
         }
     }
 
@@ -131,11 +131,11 @@ class ReviewServiceTest {
 
             try (var mapper = mockStatic(ReviewMapper.class)) {
                 ReviewDtoResponse expected = new ReviewDtoResponse(
-                        1L, user.getUserId(), 1, "Updated content", 4
+                        1L, user.getUserId(), 1L, "Updated content", (short) 4
                 );
                 mapper.when(() -> ReviewMapper.toReviewDtoResponse(any(Review.class))).thenReturn(expected);
 
-                ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", user.getUserId(), 4);
+                ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", user.getUserId(), (short) 4);
                 ReviewDtoResponse result = reviewService.updateReview(updateRequest, 1L);
 
                 assertNotNull(result);
@@ -186,7 +186,7 @@ class ReviewServiceTest {
 
             try (var mapper = mockStatic(ReviewMapper.class)) {
                 ReviewDtoResponse expected = new ReviewDtoResponse(
-                        1L, user.getUserId(), 1, "Great book", 5
+                        1L, user.getUserId(), 1L, "Great book", (short) 5
                 );
                 mapper.when(() -> ReviewMapper.toReviewDtoResponse(review)).thenReturn(expected);
 

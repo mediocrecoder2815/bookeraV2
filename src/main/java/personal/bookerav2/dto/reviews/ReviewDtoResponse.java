@@ -5,8 +5,8 @@ import java.util.UUID;
 public record ReviewDtoResponse(
         Long reviewId,
         UUID userId,
-        Integer bookId,
+        Long bookId,
         String content,
-        Integer rating
+        Short rating
 ) {
 }

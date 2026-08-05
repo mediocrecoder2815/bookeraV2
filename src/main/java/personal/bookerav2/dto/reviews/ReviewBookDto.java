@@ -7,6 +7,6 @@ public record ReviewBookDto(
         String username,
         String avatarUrl,
         String content,
-        Integer rating
+        Short rating
 ) {
 }

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import personal.bookerav2.entities.enums.CountryCode;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -19,10 +19,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "author_id")
-    @SequenceGenerator(initialValue = 6)
-    Integer authorId;
+    Long authorId;
 
     @Column(name = "name", nullable = false, length = 25)
     String name;
@@ -36,11 +35,11 @@ public class Author {
     @ManyToMany(mappedBy = "authors")
     Set<Book> books = new HashSet<>();
 
-    @Column(name = "date_of_birth")
-    Instant dateOfBirth;
+    @Column(name = "date_of_birth", nullable = false)
+    LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "country")
+    @Column(name = "country", nullable = false)
     CountryCode country;
 
 

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 
 @Entity
@@ -14,23 +16,23 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Review {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    @SequenceGenerator(initialValue = 100)
     Long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
     @Column(name = "rating", nullable = false)
-    Integer rating;
+    Short rating;
 
-    @Column(name = "content")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "content", nullable = false)
     String content;
 
 }

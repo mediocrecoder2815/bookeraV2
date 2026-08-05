@@ -6,10 +6,10 @@ import personal.bookerav2.entities.Category;
 import java.util.Set;
 
 public record BookDtoResponse (
-        Integer bookId,
+        Long bookId,
         String name,
         String isbn,
-        Integer totalPages,
+        Short totalPages,
         String description,
         Set<BookAuthorDto> authors,
         Set<Category> categorySet,

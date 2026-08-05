@@ -8,7 +8,7 @@ import personal.bookerav2.entities.Book;
 import java.util.Set;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, Integer> {
-    Set<Book> findByAuthors_AuthorId(Integer authorId);
+public interface BookRepository extends JpaRepository<Book, Long> {
+    Set<Book> findByAuthors_AuthorId(Long authorId);
 }
 

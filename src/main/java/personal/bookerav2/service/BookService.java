@@ -32,7 +32,7 @@ public class BookService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    public BookDtoResponse getBookById(Integer id){
+    public BookDtoResponse getBookById(Long id){
         Book bookToFind = findById(id);
         return BookMapper.toResponseDto(bookToFind);
     }
@@ -64,7 +64,7 @@ public class BookService {
         return BookMapper.toResponseDto(newBook);
     }
 
-    public void deleteBookById(Integer id){
+    public void deleteBookById(Long id){
         Book bookToDelete = findById(id);
         log.info("Deleting book with id: {}", id);
         authorRepository.findByBooks_BookId(id).forEach(
@@ -81,7 +81,7 @@ public class BookService {
 
 
     @Transactional
-    public BookDtoResponse updateBook(BookDtoRequest bookRequest, Integer bookId){
+    public BookDtoResponse updateBook(BookDtoRequest bookRequest, Long bookId){
         Book bookToUpdate = findById(bookId);
         bookToUpdate.setName(bookRequest.name());
         bookToUpdate.setIsbn(bookRequest.isbn());
@@ -92,7 +92,7 @@ public class BookService {
         return BookMapper.toResponseDto(bookToUpdate);
     }
 
-    private Book findById(int id){
+    private Book findById(long id){
         return bookRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
 

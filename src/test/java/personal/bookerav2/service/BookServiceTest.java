@@ -24,10 +24,12 @@ import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.CategoryRepository;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 
 import personal.bookerav2.exceptions.ResourceNotFound;
+import personal.bookerav2.repository.UserRepository;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -45,8 +47,13 @@ class BookServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private BookService bookService;
+
+
 
     private Author author;
     private Book book;
@@ -54,10 +61,11 @@ class BookServiceTest {
     private BookDtoRequest bookDtoRequestWithCategories;
     private Category category;
 
+
     @BeforeEach
     void setUp() {
         author = Author.builder()
-                .authorId(1)
+                .authorId(1L)
                 .name("George")
                 .surname("Orwell")
                 .build();
@@ -68,12 +76,12 @@ class BookServiceTest {
                 .build();
 
         book = new Book();
-        book.setBookId(1);
+        book.setBookId(1L);
         book.setName("1984");
         book.setIsbn("1234567890");
-        book.setTotalPages(328);
+        book.setTotalPages((short) 328);
         book.setDescription("Dystopian novel");
-        book.setDateOfPublish(Instant.parse("1949-06-08T00:00:00Z"));
+        book.setDateOfPublish(LocalDate.of(1949, 6, 8));
         book.setAuthors(new HashSet<>(Set.of(author)));
         book.setCategories(new HashSet<>(Set.of(category)));
         book.setReviews(new HashSet<>());
@@ -81,10 +89,10 @@ class BookServiceTest {
         bookDtoRequest = new BookDtoRequest(
                 "1984",
                 "1234567890",
-                328,
+                 (short) 328,
                 "Dystopian novel",
-                Instant.parse("1949-06-08T00:00:00Z"),
-                1,
+                LocalDate.of(1949, 6, 8),
+                1L,
                 "example.org/author_picture",
                 Optional.empty()
         );
@@ -92,10 +100,10 @@ class BookServiceTest {
         bookDtoRequestWithCategories = new BookDtoRequest(
                 "1984",
                 "1234567890",
-                328,
+                 (short) 328,
                 "Dystopian novel",
-                Instant.parse("1949-06-08T00:00:00Z"),
-                1,
+                LocalDate.of(1949, 6, 8),
+                1L,
                 "picture",
                 Optional.of(new HashSet<>(Set.of(1)))
         );
@@ -107,18 +115,18 @@ class BookServiceTest {
 
         @Test
         void shouldReturnBookWhenFound() {
-            when(bookRepository.findById(1)).thenReturn(Optional.of(book));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
             try (var mapper = mockStatic(BookMapper.class)) {
                 BookDtoResponse expected = new BookDtoResponse(
-                        1, "1984", "1234567890", 328, "Dystopian novel",
-                        Set.of(new BookAuthorDto(1, "George", "Orwell")),
+                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
                 mapper.when(() -> BookMapper.toResponseDto(book)).thenReturn(expected);
 
-                BookDtoResponse result = bookService.getBookById(1);
+                BookDtoResponse result = bookService.getBookById(1L);
 
                 assertNotNull(result);
                 assertEquals(expected, result);
@@ -127,9 +135,9 @@ class BookServiceTest {
 
         @Test
         void shouldThrowWhenNotFound() {
-            when(bookRepository.findById(99)).thenReturn(Optional.empty());
+            when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
-            assertThrows(ResourceNotFound.class, () -> bookService.getBookById(99));
+            assertThrows(ResourceNotFound.class, () -> bookService.getBookById(99L));
         }
     }
 
@@ -157,20 +165,20 @@ class BookServiceTest {
 
         @Test
         void shouldCreateBookWithoutCategories() {
-            when(authorRepository.findById(1)).thenReturn(Optional.of(author));
+            when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
             when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             try (var mapper = mockStatic(BookMapper.class)) {
                 Book newBook = new Book();
                 newBook.setName("1984");
                 newBook.setIsbn("1234567890");
-                newBook.setTotalPages(328);
+                newBook.setTotalPages((short) 328);
                 newBook.setDescription("Dystopian novel");
-                newBook.setDateOfPublish(Instant.parse("1949-06-08T00:00:00Z"));
+                newBook.setDateOfPublish(LocalDate.of(1949, 6, 8));
 
                 BookDtoResponse expected = new BookDtoResponse(
-                        1, "1984", "1234567890", 328, "Dystopian novel",
-                        Set.of(new BookAuthorDto(1, "George", "Orwell")),
+                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         new HashSet<>(),
                         new HashSet<>()
                 );
@@ -188,7 +196,7 @@ class BookServiceTest {
 
         @Test
         void shouldCreateBookWithCategories() {
-            when(authorRepository.findById(1)).thenReturn(Optional.of(author));
+            when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
             when(categoryRepository.findById(1)).thenReturn(Optional.of(category));
             when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -196,13 +204,13 @@ class BookServiceTest {
                 Book newBook = new Book();
                 newBook.setName("1984");
                 newBook.setIsbn("1234567890");
-                newBook.setTotalPages(328);
+                newBook.setTotalPages((short) 328);
                 newBook.setDescription("Dystopian novel");
-                newBook.setDateOfPublish(Instant.parse("1949-06-08T00:00:00Z"));
+                newBook.setDateOfPublish(LocalDate.of(1949, 6, 8));
 
                 BookDtoResponse expected = new BookDtoResponse(
-                        1, "1984", "1234567890", 328, "Dystopian novel",
-                        Set.of(new BookAuthorDto(1, "George", "Orwell")),
+                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
@@ -226,33 +234,33 @@ class BookServiceTest {
 
         @Test
         void shouldUpdateBookSuccessfully() {
-            when(bookRepository.findById(1)).thenReturn(Optional.of(book));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             try (var mapper = mockStatic(BookMapper.class)) {
                 BookDtoResponse expected = new BookDtoResponse(
-                        1, "1984", "1234567890", 328, "Dystopian novel",
-                        Set.of(new BookAuthorDto(1, "George", "Orwell")),
+                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
                 mapper.when(() -> BookMapper.toResponseDto(any(Book.class))).thenReturn(expected);
 
-                BookDtoResponse result = bookService.updateBook(bookDtoRequest, 1);
+                BookDtoResponse result = bookService.updateBook(bookDtoRequest, 1L);
 
                 assertNotNull(result);
                 assertEquals(expected, result);
-                verify(bookRepository).findById(1);
+                verify(bookRepository).findById(1L);
                 verify(bookRepository).save(any(Book.class));
             }
         }
 
         @Test
         void shouldThrowWhenNotFound() {
-            when(bookRepository.findById(99)).thenReturn(Optional.empty());
+            when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFound.class,
-                    () -> bookService.updateBook(bookDtoRequest, 99));
+                    () -> bookService.updateBook(bookDtoRequest, 99L));
         }
     }
 
@@ -262,19 +270,19 @@ class BookServiceTest {
 
         @Test
         void shouldDeleteBookSuccessfully() {
-            when(bookRepository.findById(1)).thenReturn(Optional.of(book));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
-            bookService.deleteBookById(1);
+            bookService.deleteBookById(1L);
 
-            verify(bookRepository).findById(1);
+            verify(bookRepository).findById(1L);
             verify(bookRepository).delete(book);
         }
 
         @Test
         void shouldThrowWhenNotFound() {
-            when(bookRepository.findById(99)).thenReturn(Optional.empty());
+            when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
-            assertThrows(ResourceNotFound.class, () -> bookService.deleteBookById(99));
+            assertThrows(ResourceNotFound.class, () -> bookService.deleteBookById(99L));
         }
     }
 }

@@ -25,7 +25,7 @@ public class ReviewService{
     private final BookRepository bookRepository;
 
     @Transactional
-    public ReviewDtoResponse createReview(ReviewDtoRequest r, Integer bookId){
+    public ReviewDtoResponse createReview(ReviewDtoRequest r, Long bookId){
         Review review = new Review();
         Book bookToFind = findBookById(bookId);
         User userToFind = findUserById(r.userId());
@@ -50,7 +50,7 @@ public class ReviewService{
         return ReviewMapper.toReviewDtoResponse(findReviewById(id));
     }
 
-    private Book findBookById(int id){
+    private Book findBookById(long id){
         return bookRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFound("Book with id + " + id + " doesn't exists")
         );

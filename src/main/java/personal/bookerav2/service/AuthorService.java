@@ -26,7 +26,7 @@ public class AuthorService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
 
-    public AuthorDtoResponse getAuthorById(Integer id){
+    public AuthorDtoResponse getAuthorById(Long id){
         Author authorToFind = findById(id);
         return AuthorMapper.toResponseDto(authorToFind);
     }
@@ -36,7 +36,7 @@ public class AuthorService {
     }
 
     @Transactional
-    public void deleteAuthorById(Integer id) {
+    public void deleteAuthorById(Long id) {
         Author author = findById(id);
 
         for (Book book : bookRepository.findByAuthors_AuthorId(id)) {
@@ -70,7 +70,7 @@ public class AuthorService {
     }
 
     @Transactional
-    public AuthorDtoResponse updateAuthor(AuthorDtoRequest a, Integer id){
+    public AuthorDtoResponse updateAuthor(AuthorDtoRequest a, Long id){
         Author authorToUpdate = findById(id);
         authorToUpdate.setName(a.name());
         authorToUpdate.setSurname(a.surname());
@@ -80,7 +80,7 @@ public class AuthorService {
         return AuthorMapper.toResponseDto(authorRepository.save(authorToUpdate));
     }
 
-    private Author findById(int id){
+    private Author findById(long id){
         return authorRepository.findById(id).orElseThrow
                 (() -> new ResourceNotFound("Author with id :" + id + " doesn't exists"));
     }

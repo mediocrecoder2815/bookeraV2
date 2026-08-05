@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
-    Set<User> findByBooks_bookId(Integer bookId);
+    Set<User> findByBooks_bookId(Long bookId);
 }

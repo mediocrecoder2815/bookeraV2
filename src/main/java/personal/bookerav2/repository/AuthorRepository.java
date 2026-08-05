@@ -8,6 +8,6 @@ import java.util.Set;
 
 
 @Repository
-public interface AuthorRepository extends JpaRepository<Author, Integer> {
-    Set<Author> findByBooks_BookId(Integer bookId);
+public interface AuthorRepository extends JpaRepository<Author, Long> {
+    Set<Author> findByBooks_BookId(Long bookId);
 }

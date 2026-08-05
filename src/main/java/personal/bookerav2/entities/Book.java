@@ -3,7 +3,7 @@ package personal.bookerav2.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,25 +16,24 @@ import java.util.Set;
 @AllArgsConstructor
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(initialValue = 6)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_id")
-    Integer bookId;
+    Long bookId;
 
     @Column(name = "name", nullable = false, length = 50)
     String name;
 
-    @Column(name = "ISBN", nullable = false, length = 20)
+    @Column(name = "ISBN", nullable = false, length = 14)
     String isbn;
 
-    @Column(name = "total_pages")
-    Integer totalPages;
+    @Column(name = "total_pages", nullable = false)
+    Short totalPages;
 
     @Column(name = "description")
     String description;
 
     @Column(name = "date_of_publish")
-    Instant dateOfPublish;
+    LocalDate dateOfPublish;
 
     @ManyToMany
     @JoinTable(

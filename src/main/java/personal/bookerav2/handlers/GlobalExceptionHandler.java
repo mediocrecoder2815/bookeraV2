@@ -1,5 +1,6 @@
 package personal.bookerav2.handlers;
 
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,4 +39,11 @@ public class GlobalExceptionHandler {
                     .collect(Collectors.joining("; ")));
             return pd;
         }
+
+    @ExceptionHandler({PropertyReferenceException.class, IllegalArgumentException.class})
+    public ProblemDetail handleBadRequest(Exception ex){
+        ProblemDetail pd = ProblemDetail.forStatus(400);
+        pd.setDetail(ex.getLocalizedMessage());
+        return pd;
+    }
 }

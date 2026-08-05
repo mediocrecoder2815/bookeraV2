@@ -20,7 +20,7 @@ import personal.bookerav2.entities.enums.CountryCode;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -49,12 +49,12 @@ class AuthorServiceTest {
     @BeforeEach
     void setUp() {
         author = Author.builder()
-                .authorId(1)
+                .authorId(1L)
                 .name("John")
                 .surname("Doe")
                 .description("An author")
                 .country(CountryCode.us)
-                .dateOfBirth(Instant.parse("1990-01-01T00:00:00Z"))
+                .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .books(new HashSet<>())
                 .build();
 
@@ -62,8 +62,9 @@ class AuthorServiceTest {
                 "John",
                 "Doe",
                 "An author",
-                CountryCode.us,
-                Instant.parse("1990-01-01T00:00:00Z")
+                null,
+                "us",
+                LocalDate.of(1990, 1, 1)
         );
     }
 
@@ -73,16 +74,16 @@ class AuthorServiceTest {
 
         @Test
         void shouldReturnAuthorWhenFound() {
-            when(authorRepository.findById(1)).thenReturn(Optional.of(author));
+            when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
 
             try (var mapper = mockStatic(AuthorMapper.class)) {
                 AuthorDtoResponse expected = new AuthorDtoResponse(
-                        1, "John", "Doe", "An author", CountryCode.us,
-                        Instant.parse("1990-01-01T00:00:00Z"), new HashSet<>()
+                        1L, "John", "Doe", "An author", CountryCode.us,
+                        LocalDate.of(1990, 1, 1), null, new HashSet<>()
                 );
                 mapper.when(() -> AuthorMapper.toResponseDto(author)).thenReturn(expected);
 
-                AuthorDtoResponse result = authorService.getAuthorById(1);
+                AuthorDtoResponse result = authorService.getAuthorById(1L);
 
                 assertNotNull(result);
                 assertEquals(expected, result);
@@ -91,9 +92,9 @@ class AuthorServiceTest {
 
         @Test
         void shouldThrowWhenNotFound() {
-            when(authorRepository.findById(99)).thenReturn(Optional.empty());
+            when(authorRepository.findById(99L)).thenReturn(Optional.empty());
 
-            assertThrows(ResourceNotFound.class, () -> authorService.getAuthorById(99));
+            assertThrows(ResourceNotFound.class, () -> authorService.getAuthorById(99L));
         }
     }
 
@@ -125,8 +126,8 @@ class AuthorServiceTest {
 
             try (var mapper = mockStatic(AuthorMapper.class)) {
                 AuthorDtoResponse expected = new AuthorDtoResponse(
-                        1, "John", "Doe", "An author", CountryCode.us,
-                        Instant.parse("1990-01-01T00:00:00Z"), new HashSet<>()
+                        1L, "John", "Doe", "An author", CountryCode.us,
+                        LocalDate.of(1990, 1, 1), null, new HashSet<>()
                 );
                 mapper.when(() -> AuthorMapper.toResponseDto(author)).thenReturn(expected);
 
@@ -145,31 +146,31 @@ class AuthorServiceTest {
 
         @Test
         void shouldUpdateAuthorSuccessfully() {
-            when(authorRepository.findById(1)).thenReturn(Optional.of(author));
+            when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
             when(authorRepository.save(any(Author.class))).thenReturn(author);
 
             try (var mapper = mockStatic(AuthorMapper.class)) {
                 AuthorDtoResponse expected = new AuthorDtoResponse(
-                        1, "John", "Doe", "An author", CountryCode.us,
-                        Instant.parse("1990-01-01T00:00:00Z"), new HashSet<>()
+                        1L, "John", "Doe", "An author", CountryCode.us,
+                        LocalDate.of(1990, 1, 1), null, new HashSet<>()
                 );
                 mapper.when(() -> AuthorMapper.toResponseDto(author)).thenReturn(expected);
 
-                AuthorDtoResponse result = authorService.updateAuthor(authorDtoRequest, 1);
+                AuthorDtoResponse result = authorService.updateAuthor(authorDtoRequest, 1L);
 
                 assertNotNull(result);
                 assertEquals(expected, result);
-                verify(authorRepository).findById(1);
+                verify(authorRepository).findById(1L);
                 verify(authorRepository).save(any(Author.class));
             }
         }
 
         @Test
         void shouldThrowWhenNotFound() {
-            when(authorRepository.findById(99)).thenReturn(Optional.empty());
+            when(authorRepository.findById(99L)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFound.class,
-                    () -> authorService.updateAuthor(authorDtoRequest, 99));
+                    () -> authorService.updateAuthor(authorDtoRequest, 99L));
         }
     }
 
@@ -179,19 +180,19 @@ class AuthorServiceTest {
 
         @Test
         void shouldDeleteAuthorSuccessfully() {
-            when(authorRepository.findById(1)).thenReturn(Optional.of(author));
+            when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
 
-            authorService.deleteAuthorById(1);
+            authorService.deleteAuthorById(1L);
 
-            verify(authorRepository).findById(1);
+            verify(authorRepository).findById(1L);
             verify(authorRepository).delete(author);
         }
 
         @Test
         void shouldThrowWhenNotFound() {
-            when(authorRepository.findById(99)).thenReturn(Optional.empty());
+            when(authorRepository.findById(99L)).thenReturn(Optional.empty());
 
-            assertThrows(ResourceNotFound.class, () -> authorService.deleteAuthorById(99));
+            assertThrows(ResourceNotFound.class, () -> authorService.deleteAuthorById(99L));
         }
     }
 }

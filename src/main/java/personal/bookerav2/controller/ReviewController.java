@@ -16,7 +16,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/{bookId}")
-    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable Integer bookId, @RequestBody @Valid ReviewDtoRequest reviewDto){
+    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable Long bookId, @RequestBody @Valid ReviewDtoRequest reviewDto){
         return ResponseEntity.ok(reviewService.createReview(reviewDto, bookId));
     }
     @PutMapping("/{id}")

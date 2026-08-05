@@ -21,16 +21,16 @@ public class User {
     @Column(name = "user_id")
     UUID userId;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, length = 50)
     String username;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 50)
     String name;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false, length = 50)
     String surname;
 
-    @Column(name = "hashed_password")
+    @Column(name = "hashed_password", nullable = false)
     String hashedPassword;
 
     @ManyToMany
@@ -41,6 +41,6 @@ public class User {
     )
     Set<Book> books = new HashSet<>();
 
-    @Column(name = "avatar_url")
+    @Column(name = "avatar_url", unique = true)
     String avatarUrl;
 }

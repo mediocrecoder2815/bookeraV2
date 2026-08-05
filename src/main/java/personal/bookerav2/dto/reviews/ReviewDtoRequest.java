@@ -8,7 +8,7 @@ import java.util.UUID;
 public record ReviewDtoRequest(
         @NotBlank String content,
         @NotNull UUID userId,
-        @NotNull Integer rating
+        @NotNull Short rating
 ){
     public ReviewDtoRequest{
         if(rating > 5 || rating < 0){
