@@ -26,7 +26,7 @@ reviews) becomes core functionality — nothing gets cut.
 - [x] Kill `data.sql` auto re-seed (`spring.sql.init.mode=always` + `DELETE FROM` wipes all data on every startup)
 - [x] `ddl-auto=update` → `validate` (Flyway owns the schema)
 - [x] Add `spring-boot-starter-actuator` + `/actuator/health`
-- [ ] `docker-compose.yml` (app + postgres, secrets via env vars) + multi-stage `Dockerfile`
+- [x] `docker-compose.yml` (app + postgres, secrets via env vars) + multi-stage `Dockerfile`
 
 ## Phase 2 — Users & auth (Goodreads core #1)
 
