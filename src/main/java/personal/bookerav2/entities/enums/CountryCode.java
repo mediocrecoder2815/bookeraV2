@@ -6,7 +6,8 @@ public enum CountryCode {
     US("United States"),
     RU("Russia"),
     IT("Italy"),
-    GB("Great Britannia");
+    GB("Great Britannia"),
+    CN("China");
 
     private final String fullName;
     CountryCode(String fullName){
@@ -16,6 +17,7 @@ public enum CountryCode {
         return fullName;
     }
     public static CountryCode convert(String code){
+        code = code.toUpperCase();
         return switch (code){
             case "CZ" -> CountryCode.CZ;
             case "KZ" -> CountryCode.KZ;
@@ -23,6 +25,7 @@ public enum CountryCode {
             case "RU" -> CountryCode.RU;
             case "IT" -> CountryCode.IT;
             case "GB" -> CountryCode.GB;
+            case "CN" -> CountryCode.CN;
             default -> throw new IllegalArgumentException();
             };
         }

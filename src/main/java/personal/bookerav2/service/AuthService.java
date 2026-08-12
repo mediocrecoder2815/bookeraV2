@@ -6,13 +6,16 @@ import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.auth.AuthResponse;
 import personal.bookerav2.dto.auth.LoginRequest;
 import personal.bookerav2.dto.auth.RegisterRequest;
+import personal.bookerav2.entities.Role;
 import personal.bookerav2.entities.User;
 import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.exceptions.ResourceDuplicateException;
 import personal.bookerav2.repository.UserRepository;
 import personal.bookerav2.security.JwtService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -32,9 +35,7 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         Optional<User> user = userRepository.findByUsername(request.username());
         if(user.isPresent()){
-            if (passwordEncoder.matches(request.password(), user.get().getHashedPassword())){
-                throw new ResourceDuplicateException("User already exists");
-            }
+            throw new ResourceDuplicateException("Username already taken!");
         }
         User newUser = new User();
         newUser.setName(request.name());
@@ -59,8 +60,12 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
         Optional<User> userToFind = userRepository.findByUsername(request.username());
         if (userToFind.isPresent()){
+
             if (passwordEncoder.matches(request.password(), userToFind.get().getHashedPassword())){
-                String token = jwtService.generateToken(request.username(), List.of("USER"));
+                String token = jwtService.generateToken(request.username(),
+                        userToFind.get().getRoles().stream()
+                                .map(r -> r.getRoleName())
+                                .toList());
                 return new AuthResponse(token, request.username(), List.of("USER"));
             }
             else{

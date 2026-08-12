@@ -63,7 +63,7 @@ class AuthorServiceTest {
                 "Doe",
                 "An author",
                 null,
-                "us",
+                "US",
                 LocalDate.of(1990, 1, 1)
         );
     }

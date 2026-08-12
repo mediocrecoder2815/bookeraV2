@@ -30,11 +30,11 @@ reviews) becomes core functionality — nothing gets cut.
 
 ## Phase 2 — Users & auth (Goodreads core #1)
 
-- [ ] Spring Security + JWT:
+- [x] Spring Security + JWT:
       `POST /api/auth/register`, `POST /api/auth/login` → JWT
-- [ ] Protect write endpoints; keep read-only catalog (`GET`) public
-- [ ] `UserService.getCurrentUser()` from JWT — no more guessing `userId` from request bodies
-- [ ] Uncomment/adapt `SecurityConfig.java`
+- [x] Protect write endpoints; keep read-only catalog (`GET`) public
+- [x] `UserService.getCurrentUser()` from JWT — no more guessing `userId` from request bodies
+- [x] Uncomment/adapt `SecurityConfig.java`
 
 ## Phase 3 — Book tracking (Goodreads core #2)
 

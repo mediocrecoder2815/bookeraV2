@@ -33,7 +33,9 @@ public class BookService {
     private final UserRepository userRepository;
 
     public BookDtoResponse getBookById(Long id){
-        Book bookToFind = findById(id);
+        Book bookToFind = bookRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
         return BookMapper.toResponseDto(bookToFind);
     }
 

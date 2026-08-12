@@ -7,7 +7,7 @@ target/
 application-local.properties
 report.md
 JWT_TASK.md
-
+CLEANUP.md
 
 ### STS ###
 .apt_generated

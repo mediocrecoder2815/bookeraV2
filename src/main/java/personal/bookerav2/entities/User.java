@@ -44,5 +44,12 @@ public class User {
     @Column(name = "avatar_url", unique = true)
     String avatarUrl;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    Set<Role> roles = new HashSet<>();
 
 }

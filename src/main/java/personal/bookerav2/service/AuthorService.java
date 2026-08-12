@@ -27,7 +27,9 @@ public class AuthorService {
     private final UserRepository userRepository;
 
     public AuthorDtoResponse getAuthorById(Long id){
-        Author authorToFind = findById(id);
+        Author authorToFind = authorRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Author with id " + id + " doesn't exists"));
         return AuthorMapper.toResponseDto(authorToFind);
     }
     public Page<AuthorDtoAll> getAllAuthors(Pageable pageable){
