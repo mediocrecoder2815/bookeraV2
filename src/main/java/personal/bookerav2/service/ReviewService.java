@@ -10,11 +10,13 @@ import personal.bookerav2.dto.wrappers.ReviewMapper;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Review;
 import personal.bookerav2.entities.User;
+import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.ReviewRepository;
 import personal.bookerav2.repository.UserRepository;
 
+import java.security.Principal;
 import java.util.UUID;
 
 @Service
@@ -25,28 +27,48 @@ public class ReviewService{
     private final BookRepository bookRepository;
 
     @Transactional
-    public ReviewDtoResponse createReview(ReviewDtoRequest r, Long bookId){
+    public ReviewDtoResponse createReview(ReviewDtoRequest r, Long bookId, Principal principal){
         Review review = ReviewMapper.toReview(r);
         Book bookToFind = findBookById(bookId);
         User userToFind = findUserById(r.userId());
+        if (checkUser(principal, r.userId())){
+            throw new InvalidCredentialsException("Wrong user");
+        }
         review.setBook(bookToFind);
         review.setUser(userToFind);
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
+
     @Transactional
-    public ReviewDtoResponse updateReview(ReviewDtoRequest r, Long reviewId){
+    public ReviewDtoResponse updateReview(ReviewDtoRequest r, Long reviewId, Principal principal){
         Review review = findReviewById(reviewId);
+        if(checkUser(principal, r.userId())){
+            throw new InvalidCredentialsException("Wrong user");
+        }
         review.setRating(r.rating());
         review.setContent(r.content());
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
-    public void deleteReview(Long id){
+    public void deleteReview(Long id, Principal principal){
         Review r = findReviewById(id);
+        User userToFind = userRepository.findByUsername(principal.getName()).orElseThrow(
+                () -> new InvalidCredentialsException("Wrong user, brother")
+        );
+        String ownerUsername = r.getUser().getUsername();
+        if (!ownerUsername.equals(userToFind.getUsername())){
+            throw new InvalidCredentialsException("Nice try");
+        }
         reviewRepository.delete(r);
     }
     public ReviewDtoResponse getReviewById(Long id){
         return ReviewMapper.toReviewDtoResponse(findReviewById(id));
     }
+
+
+
+
+
+
 
     private Book findBookById(long id){
         return bookRepository.findById(id).orElseThrow(
@@ -63,5 +85,17 @@ public class ReviewService{
         return reviewRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFound("Review with id " + id + " doesn't exists")
         );
+    }
+
+
+    private boolean checkUser(Principal principal, UUID userId){
+        User unchekedOwner = userRepository.findById(userId).orElseThrow(
+                ()-> new ResourceNotFound("User doesn't exists"));
+        User owner = userRepository.findByUsername(principal.getName()).orElseThrow(
+                () -> new ResourceNotFound("Something went wrong!"));
+        if(!unchekedOwner.getUsername().equals(owner.getUsername())){
+            return false;
+        }
+        return true;
     }
 }

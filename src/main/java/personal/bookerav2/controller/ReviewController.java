@@ -9,6 +9,8 @@ import personal.bookerav2.dto.reviews.ReviewDtoRequest;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.service.ReviewService;
 
+import java.security.Principal;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/reviews")
@@ -16,8 +18,8 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/{bookId}")
-    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable Long bookId, @RequestBody @Valid ReviewDtoRequest reviewDto){
-        return ResponseEntity.ok(reviewService.createReview(reviewDto, bookId));
+    public ResponseEntity<ReviewDtoResponse> createReview(@PathVariable Long bookId, @RequestBody @Valid ReviewDtoRequest reviewDto, Principal principal){
+        return ResponseEntity.ok(reviewService.createReview(reviewDto, bookId, principal));
     }
     @PutMapping("/{id}")
     public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable Long id, @RequestBody @Valid ReviewDtoRequest review){
