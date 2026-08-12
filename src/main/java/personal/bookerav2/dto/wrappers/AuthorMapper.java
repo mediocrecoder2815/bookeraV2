@@ -3,15 +3,28 @@ package personal.bookerav2.dto.wrappers;
 import org.springframework.stereotype.Component;
 import personal.bookerav2.dto.authors.AuthorBookDto;
 import personal.bookerav2.dto.authors.AuthorDtoAll;
+import personal.bookerav2.dto.authors.AuthorDtoRequest;
 import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
+import personal.bookerav2.entities.enums.CountryCode;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class AuthorMapper {
+    public static Author toAuthor(AuthorDtoRequest a){
+        return Author.builder()
+                .name(a.name())
+                .surname(a.surname())
+                .description(a.description())
+                .dateOfBirth(a.dateOfBirth())
+                .country(CountryCode.convert(a.countryCode()))
+                .pictureUrl(a.pictureUrl())
+                .build();
+    }
+
     public static AuthorDtoResponse toResponseDto(Author author){
         return new AuthorDtoResponse(
                 author.getAuthorId(),

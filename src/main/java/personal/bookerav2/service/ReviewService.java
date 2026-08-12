@@ -26,13 +26,11 @@ public class ReviewService{
 
     @Transactional
     public ReviewDtoResponse createReview(ReviewDtoRequest r, Long bookId){
-        Review review = new Review();
+        Review review = ReviewMapper.toReview(r);
         Book bookToFind = findBookById(bookId);
         User userToFind = findUserById(r.userId());
-        review.setContent(r.content());
         review.setBook(bookToFind);
         review.setUser(userToFind);
-        review.setRating(r.rating());
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
     @Transactional

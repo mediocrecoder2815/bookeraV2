@@ -43,4 +43,6 @@ public class User {
 
     @Column(name = "avatar_url", unique = true)
     String avatarUrl;
+
+
 }

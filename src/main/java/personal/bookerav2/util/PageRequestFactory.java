@@ -13,7 +13,9 @@ public final class PageRequestFactory {
     private PageRequestFactory() {}
 
     public static Pageable from(int page, int size, String sortBy,
-                                boolean ascending, Set<String> allowedFields, String defaultField) {
+                                boolean ascending, Set<String> allowedFields,
+                                String defaultField)
+    {
         if (page < 0) throw new IllegalArgumentException("page must be >= 0, got " + page);
         if (size < 1 || size > MAX_SIZE)
             throw new IllegalArgumentException("size must be between 1 and " + MAX_SIZE + ", got " + size);

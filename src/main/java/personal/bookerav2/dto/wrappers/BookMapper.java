@@ -48,14 +48,14 @@ public class BookMapper {
         );
     }
     public static Book toBook(BookDtoRequest book){
-        Book newBook = new Book();
-        newBook.setName(book.name());
-        newBook.setTotalPages(book.totalPages());
-        newBook.setDescription(book.description());
-        newBook.setIsbn(book.isbn());
-        newBook.setDateOfPublish(book.dateOfPublish());
-        newBook.setPictureUrl(book.pictureUrl());
-        return newBook;
+        return Book.builder()
+                .name(book.name())
+                .totalPages(book.totalPages())
+                .description(book.description())
+                .isbn(book.isbn())
+                .dateOfPublish(book.dateOfPublish())
+                .pictureUrl(book.pictureUrl())
+                .build();
     }
 
 }

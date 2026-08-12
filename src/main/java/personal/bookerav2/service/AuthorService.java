@@ -59,13 +59,7 @@ public class AuthorService {
 
     @Transactional
     public AuthorDtoResponse createAuthor(AuthorDtoRequest a){
-        Author newAuthor = new Author();
-        newAuthor.setName(a.name());
-        newAuthor.setSurname(a.surname());
-        newAuthor.setPictureUrl(a.pictureUrl());
-        newAuthor.setDescription(a.description());
-        newAuthor.setCountry(CountryCode.convert(a.countryCode()));
-        newAuthor.setDateOfBirth(a.dateOfBirth());
+        Author newAuthor = AuthorMapper.toAuthor(a);
         return AuthorMapper.toResponseDto(authorRepository.save(newAuthor));
     }
 

@@ -5,6 +5,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.exceptions.ResourceDuplicateException;
 import personal.bookerav2.exceptions.ResourceNotFound;
 
@@ -14,6 +15,15 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     private final static int NOT_FOUND = 404;
     private final static int DUPLICATE_FOUND = 409;
+    private final static int UNAUTHORIZED = 401;
+
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ProblemDetail handleUnauthorized(InvalidCredentialsException ice) {
+        ProblemDetail pd = ProblemDetail.forStatus(UNAUTHORIZED);
+        pd.setDetail(ice.getLocalizedMessage());
+        return pd;
+    }
 
 
     @ExceptionHandler(ResourceNotFound.class)

@@ -41,6 +41,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
+    @Builder.Default
     Set<Author> authors = new HashSet<>();
 
     @ManyToMany
@@ -49,11 +50,13 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+    @Builder.Default
     Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "book",
                 cascade = CascadeType.ALL,
                 orphanRemoval = true)
+    @Builder.Default
     Set<Review> reviews = new HashSet<>();
 
 

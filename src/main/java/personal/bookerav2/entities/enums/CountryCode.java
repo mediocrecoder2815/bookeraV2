@@ -1,10 +1,12 @@
 package personal.bookerav2.entities.enums;
 
 public enum CountryCode {
-    cz ("Czechia"),
-    kz ("Kazachstan"),
-    us("United States"),
-    ru("Russia");
+    CZ ("Czechia"),
+    KZ ("Kazachstan"),
+    US("United States"),
+    RU("Russia"),
+    IT("Italy"),
+    GB("Great Britannia");
 
     private final String fullName;
     CountryCode(String fullName){
@@ -15,11 +17,13 @@ public enum CountryCode {
     }
     public static CountryCode convert(String code){
         return switch (code){
-            case "cz" -> CountryCode.cz;
-            case "kz" -> CountryCode.kz;
-            case "us" -> CountryCode.us;
-            case "ru" -> CountryCode.ru;
-            default -> {throw new IllegalArgumentException();}
+            case "CZ" -> CountryCode.CZ;
+            case "KZ" -> CountryCode.KZ;
+            case "US" -> CountryCode.US;
+            case "RU" -> CountryCode.RU;
+            case "IT" -> CountryCode.IT;
+            case "GB" -> CountryCode.GB;
+            default -> throw new IllegalArgumentException();
             };
         }
 }

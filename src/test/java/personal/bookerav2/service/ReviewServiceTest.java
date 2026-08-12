@@ -87,6 +87,11 @@ class ReviewServiceTest {
             when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
             try (var mapper = mockStatic(ReviewMapper.class)) {
+                Review newReview = new Review();
+                newReview.setContent("Great book");
+                newReview.setRating((short) 5);
+                mapper.when(() -> ReviewMapper.toReview(reviewDtoRequest)).thenReturn(newReview);
+
                 ReviewDtoResponse expected = new ReviewDtoResponse(
                         1L, user.getUserId(), 1L, "Great book", (short) 5
                 );

@@ -53,7 +53,7 @@ class AuthorServiceTest {
                 .name("John")
                 .surname("Doe")
                 .description("An author")
-                .country(CountryCode.us)
+                .country(CountryCode.US)
                 .dateOfBirth(LocalDate.of(1990, 1, 1))
                 .books(new HashSet<>())
                 .build();
@@ -78,7 +78,7 @@ class AuthorServiceTest {
 
             try (var mapper = mockStatic(AuthorMapper.class)) {
                 AuthorDtoResponse expected = new AuthorDtoResponse(
-                        1L, "John", "Doe", "An author", CountryCode.us,
+                        1L, "John", "Doe", "An author", CountryCode.US,
                         LocalDate.of(1990, 1, 1), null, new HashSet<>()
                 );
                 mapper.when(() -> AuthorMapper.toResponseDto(author)).thenReturn(expected);
@@ -125,8 +125,17 @@ class AuthorServiceTest {
             when(authorRepository.save(any(Author.class))).thenReturn(author);
 
             try (var mapper = mockStatic(AuthorMapper.class)) {
+                Author newAuthor = Author.builder()
+                        .name("John")
+                        .surname("Doe")
+                        .description("An author")
+                        .country(CountryCode.US)
+                        .dateOfBirth(LocalDate.of(1990, 1, 1))
+                        .build();
+                mapper.when(() -> AuthorMapper.toAuthor(authorDtoRequest)).thenReturn(newAuthor);
+
                 AuthorDtoResponse expected = new AuthorDtoResponse(
-                        1L, "John", "Doe", "An author", CountryCode.us,
+                        1L, "John", "Doe", "An author", CountryCode.US,
                         LocalDate.of(1990, 1, 1), null, new HashSet<>()
                 );
                 mapper.when(() -> AuthorMapper.toResponseDto(author)).thenReturn(expected);
@@ -151,7 +160,7 @@ class AuthorServiceTest {
 
             try (var mapper = mockStatic(AuthorMapper.class)) {
                 AuthorDtoResponse expected = new AuthorDtoResponse(
-                        1L, "John", "Doe", "An author", CountryCode.us,
+                        1L, "John", "Doe", "An author", CountryCode.US,
                         LocalDate.of(1990, 1, 1), null, new HashSet<>()
                 );
                 mapper.when(() -> AuthorMapper.toResponseDto(author)).thenReturn(expected);

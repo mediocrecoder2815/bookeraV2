@@ -42,7 +42,6 @@ public class Author {
     @Column(name = "country", nullable = false)
     CountryCode country;
 
-
     @Column(name = "photo_url", nullable = true)
     String pictureUrl;
 
