@@ -10,13 +10,12 @@ import personal.bookerav2.entities.Role;
 import personal.bookerav2.entities.User;
 import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.exceptions.ResourceDuplicateException;
+import personal.bookerav2.exceptions.ResourceNotFound;
+import personal.bookerav2.repository.RoleRepository;
 import personal.bookerav2.repository.UserRepository;
 import personal.bookerav2.security.JwtService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +23,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
     private final JwtService jwtService;
 
     /**
@@ -38,11 +38,14 @@ public class AuthService {
             throw new ResourceDuplicateException("Username already taken!");
         }
         User newUser = new User();
+        Role userRole = roleRepository.findByRoleName("USER").orElseThrow(
+                () -> new ResourceNotFound("Roles doesn't exists"));
         newUser.setName(request.name());
         newUser.setSurname(request.surname());
         newUser.setUsername(request.username());
         String hashPass = passwordEncoder.encode(request.password());
         newUser.setHashedPassword(hashPass);
+        newUser.setRoles(new HashSet<>(Set.of(userRole)));
         userRepository.save(newUser);
         String token = jwtService.generateToken(request.username(), List.of("USER"));
         return new AuthResponse(token, request.username(), List.of("USER"));

@@ -13,7 +13,7 @@ public enum CountryCode {
     CountryCode(String fullName){
         this.fullName = fullName;
     }
-    public String getGetFullName(){
+    public String getCountyName(){
         return fullName;
     }
     public static CountryCode convert(String code){

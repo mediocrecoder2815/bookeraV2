@@ -33,9 +33,7 @@ public class BookService {
     private final UserRepository userRepository;
 
     public BookDtoResponse getBookById(Long id){
-        Book bookToFind = bookRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
+        Book bookToFind = findBookById(id);
         return BookMapper.toResponseDto(bookToFind);
     }
 
@@ -48,12 +46,11 @@ public class BookService {
     @Transactional
     public BookDtoResponse createBook(BookDtoRequest book){
         Book newBook = BookMapper.toBook(book);
-        Author author = authorRepository.findById(book.authorId())
-                .orElseThrow(() -> new ResourceNotFound("Author with id " + book.authorId() + " not found!" ));
+        Author author = findAuthorById(book.authorId());
         log.info("Trying to create book: {}", newBook);
-        if(book.categoriesId().isPresent()){
+        if(book.categoriesId() != null){
             List<Category> categories = new ArrayList<>();
-            for(Integer id : book.categoriesId().get()){
+            for(Integer id : book.categoriesId()){
                 categories.add(categoryRepository.findById(id).orElseThrow(
                         () -> new ResourceNotFound("Category with id " + id + " not found")
                 ));
@@ -67,7 +64,7 @@ public class BookService {
     }
 
     public void deleteBookById(Long id){
-        Book bookToDelete = findById(id);
+        Book bookToDelete = findBookById(id);
         log.info("Deleting book with id: {}", id);
         authorRepository.findByBooks_BookId(id).forEach(
                 a -> a.getBooks().remove(bookToDelete)
@@ -84,7 +81,7 @@ public class BookService {
 
     @Transactional
     public BookDtoResponse updateBook(BookDtoRequest bookRequest, Long bookId){
-        Book bookToUpdate = findById(bookId);
+        Book bookToUpdate = findBookById(bookId);
         bookToUpdate.setName(bookRequest.name());
         bookToUpdate.setIsbn(bookRequest.isbn());
         bookToUpdate.setDescription(bookRequest.description());
@@ -94,9 +91,12 @@ public class BookService {
         return BookMapper.toResponseDto(bookToUpdate);
     }
 
-    private Book findById(long id){
+    private Book findBookById(long id){
         return bookRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
-
+    }
+    private Author findAuthorById(Long id){
+        return authorRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFound("Author with id " + id + "not found!"));
     }
 }

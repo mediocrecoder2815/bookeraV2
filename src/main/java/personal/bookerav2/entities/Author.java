@@ -42,10 +42,13 @@ public class Author {
     @Column(name = "country", nullable = false)
     CountryCode country;
 
-    @Column(name = "photo_url", nullable = true)
+    @Column(name = "picture_url", nullable = true)
     String pictureUrl;
 
     public String getFullName(){
-        return country.getGetFullName();
+        return this.name + this.surname;
+    }
+    public String getFullCountryName(){
+        return country.getCountyName();
     }
 }

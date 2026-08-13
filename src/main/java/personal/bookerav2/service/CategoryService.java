@@ -24,20 +24,18 @@ public class CategoryService {
         return categoryRepository.save(c);
     }
     public void deleteCategoryById(Integer id){
-        Category c = categoryRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFound("Category with id " + id + " doesn't exists")
-        );
+        Category c = findById(id);
         categoryRepository.delete(c);
     }
     public Category updateCategory(Integer id, String name){
-        Category c = categoryRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFound("Category with id " + id + " doesn't exists")
-        );
+        Category c = findById(id);
         findDuplicates(name);
         c.setCategoryName(name);
         return categoryRepository.save(c);
-
     }
+
+
+
     public Category getCategoryById(Integer id){
         return findById(id);
     }

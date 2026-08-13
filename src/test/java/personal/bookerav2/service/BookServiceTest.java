@@ -94,7 +94,7 @@ class BookServiceTest {
                 LocalDate.of(1949, 6, 8),
                 1L,
                 "example.org/author_picture",
-                Optional.empty()
+                null
         );
 
         bookDtoRequestWithCategories = new BookDtoRequest(
@@ -105,7 +105,7 @@ class BookServiceTest {
                 LocalDate.of(1949, 6, 8),
                 1L,
                 "picture",
-                Optional.of(new HashSet<>(Set.of(1)))
+                new HashSet<>(Set.of(1))
         );
     }
 

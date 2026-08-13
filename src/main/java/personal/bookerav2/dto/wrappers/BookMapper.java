@@ -55,6 +55,7 @@ public class BookMapper {
                 .isbn(book.isbn())
                 .dateOfPublish(book.dateOfPublish())
                 .pictureUrl(book.pictureUrl())
+
                 .build();
     }
 

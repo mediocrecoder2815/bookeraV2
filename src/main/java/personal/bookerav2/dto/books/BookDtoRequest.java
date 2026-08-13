@@ -16,6 +16,6 @@ public record BookDtoRequest(
         @NotNull LocalDate dateOfPublish,
         @NotNull Long authorId,
         String pictureUrl,
-        Optional<Set<Integer>> categoriesId
+        Set<Integer> categoriesId
 ) {
 }

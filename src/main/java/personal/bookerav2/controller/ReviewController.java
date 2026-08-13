@@ -22,12 +22,12 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.createReview(reviewDto, bookId, principal));
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable Long id, @RequestBody @Valid ReviewDtoRequest review){
-        return ResponseEntity.ok(reviewService.updateReview(review, id));
+    public ResponseEntity<ReviewDtoResponse> updateReview(@PathVariable Long id, @RequestBody @Valid ReviewDtoRequest review, Principal principal){
+        return ResponseEntity.ok(reviewService.updateReview(review, id, principal));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long id){
-        reviewService.deleteReview(id);
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id, Principal principal){
+        reviewService.deleteReview(id, principal);
         return ResponseEntity.ok().build();
     }
 }

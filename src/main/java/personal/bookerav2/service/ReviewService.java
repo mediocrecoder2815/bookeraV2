@@ -30,19 +30,18 @@ public class ReviewService{
     public ReviewDtoResponse createReview(ReviewDtoRequest r, Long bookId, Principal principal){
         Review review = ReviewMapper.toReview(r);
         Book bookToFind = findBookById(bookId);
-        User userToFind = findUserById(r.userId());
-        if (checkUser(principal, r.userId())){
+        User userToFind = findUserByUsername(principal.getName());
+        if (!userToFind.getUsername().equals(r.username())){
             throw new InvalidCredentialsException("Wrong user");
         }
         review.setBook(bookToFind);
         review.setUser(userToFind);
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
     }
-
     @Transactional
     public ReviewDtoResponse updateReview(ReviewDtoRequest r, Long reviewId, Principal principal){
         Review review = findReviewById(reviewId);
-        if(checkUser(principal, r.userId())){
+        if(!principal.getName().equals(review.getUser().getUsername())){
             throw new InvalidCredentialsException("Wrong user");
         }
         review.setRating(r.rating());
@@ -51,11 +50,8 @@ public class ReviewService{
     }
     public void deleteReview(Long id, Principal principal){
         Review r = findReviewById(id);
-        User userToFind = userRepository.findByUsername(principal.getName()).orElseThrow(
-                () -> new InvalidCredentialsException("Wrong user, brother")
-        );
         String ownerUsername = r.getUser().getUsername();
-        if (!ownerUsername.equals(userToFind.getUsername())){
+        if (!r.getUser().getUsername().equals(principal.getName())){
             throw new InvalidCredentialsException("Nice try");
         }
         reviewRepository.delete(r);
@@ -65,11 +61,7 @@ public class ReviewService{
     }
 
 
-
-
-
-
-
+    // helpers
     private Book findBookById(long id){
         return bookRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFound("Book with id + " + id + " doesn't exists")
@@ -87,15 +79,9 @@ public class ReviewService{
         );
     }
 
-
-    private boolean checkUser(Principal principal, UUID userId){
-        User unchekedOwner = userRepository.findById(userId).orElseThrow(
-                ()-> new ResourceNotFound("User doesn't exists"));
-        User owner = userRepository.findByUsername(principal.getName()).orElseThrow(
-                () -> new ResourceNotFound("Something went wrong!"));
-        if(!unchekedOwner.getUsername().equals(owner.getUsername())){
-            return false;
-        }
-        return true;
+    private User findUserByUsername(String username){
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new ResourceNotFound("User with such username " + username + "doesn't exists!")
+        );
     }
 }

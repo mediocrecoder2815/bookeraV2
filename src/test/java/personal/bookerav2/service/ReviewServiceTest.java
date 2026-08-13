@@ -14,11 +14,13 @@ import personal.bookerav2.dto.wrappers.ReviewMapper;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Review;
 import personal.bookerav2.entities.User;
+import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.ReviewRepository;
 import personal.bookerav2.repository.UserRepository;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,6 +41,9 @@ class ReviewServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private Principal principal;
 
     @InjectMocks
     private ReviewService reviewService;
@@ -71,7 +76,7 @@ class ReviewServiceTest {
 
         reviewDtoRequest = new ReviewDtoRequest(
                 "Great book",
-                userId,
+                user.getUsername(),
                 (short) 5
         );
     }
@@ -83,7 +88,8 @@ class ReviewServiceTest {
         @Test
         void shouldCreateReviewSuccessfully() {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
+            when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+            when(principal.getName()).thenReturn(user.getUsername());
             when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
             try (var mapper = mockStatic(ReviewMapper.class)) {
@@ -97,12 +103,12 @@ class ReviewServiceTest {
                 );
                 mapper.when(() -> ReviewMapper.toReviewDtoResponse(any(Review.class))).thenReturn(expected);
 
-                ReviewDtoResponse result = reviewService.createReview(reviewDtoRequest, 1L);
+                ReviewDtoResponse result = reviewService.createReview(reviewDtoRequest, 1L, principal);
 
                 assertNotNull(result);
                 assertEquals(expected, result);
                 verify(bookRepository).findById(1L);
-                verify(userRepository).findById(user.getUserId());
+                verify(userRepository).findByUsername(user.getUsername());
                 verify(reviewRepository).save(any(Review.class));
             }
         }
@@ -112,16 +118,30 @@ class ReviewServiceTest {
             when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFound.class,
-                    () -> reviewService.createReview(reviewDtoRequest, 99L));
+                    () -> reviewService.createReview(reviewDtoRequest, 99L, principal));
         }
 
         @Test
         void shouldThrowWhenUserNotFound() {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+            when(principal.getName()).thenReturn(user.getUsername());
+            when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFound.class,
-                    () -> reviewService.createReview(reviewDtoRequest, 1L));
+                    () -> reviewService.createReview(reviewDtoRequest, 1L, principal));
+        }
+
+        @Test
+        void shouldThrowWhenPrincipalMismatch() {
+            User otherUser = new User();
+            otherUser.setUsername("someone_else");
+
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(userRepository.findByUsername("someone_else")).thenReturn(Optional.of(otherUser));
+            when(principal.getName()).thenReturn("someone_else");
+
+            assertThrows(InvalidCredentialsException.class,
+                    () -> reviewService.createReview(reviewDtoRequest, 1L, principal));
         }
     }
 
@@ -132,6 +152,7 @@ class ReviewServiceTest {
         @Test
         void shouldUpdateReviewSuccessfully() {
             when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+            when(principal.getName()).thenReturn(user.getUsername());
             when(reviewRepository.save(any(Review.class))).thenReturn(review);
 
             try (var mapper = mockStatic(ReviewMapper.class)) {
@@ -140,8 +161,8 @@ class ReviewServiceTest {
                 );
                 mapper.when(() -> ReviewMapper.toReviewDtoResponse(any(Review.class))).thenReturn(expected);
 
-                ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", user.getUserId(), (short) 4);
-                ReviewDtoResponse result = reviewService.updateReview(updateRequest, 1L);
+                ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", user.getUsername(), (short) 4);
+                ReviewDtoResponse result = reviewService.updateReview(updateRequest, 1L, principal);
 
                 assertNotNull(result);
                 assertEquals(expected, result);
@@ -155,7 +176,16 @@ class ReviewServiceTest {
             when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
 
             assertThrows(ResourceNotFound.class,
-                    () -> reviewService.updateReview(reviewDtoRequest, 99L));
+                    () -> reviewService.updateReview(reviewDtoRequest, 99L, principal));
+        }
+
+        @Test
+        void shouldThrowWhenPrincipalMismatch() {
+            when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+            when(principal.getName()).thenReturn("someone_else");
+
+            assertThrows(InvalidCredentialsException.class,
+                    () -> reviewService.updateReview(reviewDtoRequest, 1L, principal));
         }
     }
 
@@ -166,8 +196,9 @@ class ReviewServiceTest {
         @Test
         void shouldDeleteReviewSuccessfully() {
             when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+            when(principal.getName()).thenReturn(user.getUsername());
 
-            reviewService.deleteReview(1L);
+            reviewService.deleteReview(1L, principal);
 
             verify(reviewRepository).findById(1L);
             verify(reviewRepository).delete(review);
@@ -177,7 +208,16 @@ class ReviewServiceTest {
         void shouldThrowWhenNotFound() {
             when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
 
-            assertThrows(ResourceNotFound.class, () -> reviewService.deleteReview(99L));
+            assertThrows(ResourceNotFound.class, () -> reviewService.deleteReview(99L, principal));
+        }
+
+        @Test
+        void shouldThrowWhenPrincipalMismatch() {
+            when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+            when(principal.getName()).thenReturn("someone_else");
+
+            assertThrows(InvalidCredentialsException.class,
+                    () -> reviewService.deleteReview(1L, principal));
         }
     }
 

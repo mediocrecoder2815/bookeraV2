@@ -1,0 +1,1 @@
+ALTER TABLE authors RENAME COLUMN photo_url TO picture_url;

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public record ReviewDtoRequest(
         @NotBlank String content,
-        @NotNull UUID userId,
+        @NotNull String username,
         @NotNull Short rating
 ){
     public ReviewDtoRequest{
