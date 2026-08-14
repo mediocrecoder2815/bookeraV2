@@ -18,7 +18,6 @@ import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.CategoryRepository;
-import personal.bookerav2.repository.UserRepository;
 
 import java.util.*;
 
@@ -30,7 +29,6 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
 
     public BookDtoResponse getBookById(Long id){
         Book bookToFind = findBookById(id);
@@ -69,9 +67,7 @@ public class BookService {
         authorRepository.findByBooks_BookId(id).forEach(
                 a -> a.getBooks().remove(bookToDelete)
         );
-        userRepository.findByBooks_bookId(id).forEach(
-                u -> u.getBooks().remove(bookToDelete)
-        );
+        // TODO: when deleting a book it must also be deleted from user_books
 
         bookRepository.delete(bookToDelete);
         log.info("Book with id {} | was deleted", id);

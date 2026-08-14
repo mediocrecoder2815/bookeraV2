@@ -33,14 +33,6 @@ public class User {
     @Column(name = "hashed_password", nullable = false)
     String hashedPassword;
 
-    @ManyToMany
-    @JoinTable(
-            name = "book_user",
-            joinColumns = @JoinColumn(name ="user_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    Set<Book> books = new HashSet<>();
-
     @Column(name = "avatar_url", unique = true)
     String avatarUrl;
 

@@ -12,19 +12,16 @@ import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.dto.wrappers.AuthorMapper;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
-import personal.bookerav2.entities.User;
 import personal.bookerav2.entities.enums.CountryCode;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
-import personal.bookerav2.repository.UserRepository;
 
 @Service
 @AllArgsConstructor
 public class AuthorService {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
-    private final UserRepository userRepository;
 
     public AuthorDtoResponse getAuthorById(Long id){
         Author authorToFind = findById(id);
@@ -51,9 +48,7 @@ public class AuthorService {
     }
 
     private void deleteBookAndReferences(Book book) {
-        for (User user : userRepository.findByBooks_bookId(book.getBookId())) {
-            user.getBooks().remove(book);
-        }
+        // TODO: when deleting a book it must also be deleted from user_books
         bookRepository.delete(book);
     }
 

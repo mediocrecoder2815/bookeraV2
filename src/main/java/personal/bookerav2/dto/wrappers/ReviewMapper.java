@@ -7,7 +7,6 @@ import personal.bookerav2.dto.reviews.ReviewBookDto;
 import personal.bookerav2.entities.Review;
 
 
-@Component
 public class ReviewMapper {
     public static Review toReview(ReviewDtoRequest r){
         Review review = new Review();

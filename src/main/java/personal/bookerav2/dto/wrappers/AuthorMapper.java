@@ -12,7 +12,6 @@ import personal.bookerav2.entities.enums.CountryCode;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class AuthorMapper {
     public static Author toAuthor(AuthorDtoRequest a){
         return Author.builder()
