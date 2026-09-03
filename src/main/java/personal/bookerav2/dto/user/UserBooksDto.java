@@ -7,7 +7,7 @@ import java.util.List;
 public record UserBooksDto(
         String bookName,
         String pictureUrl,
-        List<String> authorName,
-        BookStatus bookStatus
+        List<String> authorName
+// TO-DO        BookStatus bookStatus
 ){
 }

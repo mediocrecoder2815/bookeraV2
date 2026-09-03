@@ -19,14 +19,13 @@ public class UserBook {
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    private UUID userId;
+    private User userId;
 
     @ManyToOne
     @MapsId("bookId")
     @JoinColumn(name = "book_id")
-    private Long bookId;
+    private Book bookId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "book_status")
-    private BookStatus bookStatus;
+    @Column(name = "status_id")
+    private short bookStatus;
 }

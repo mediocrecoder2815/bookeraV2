@@ -13,13 +13,13 @@ import java.util.UUID;
 @Getter
 public class UserBookId implements Serializable {
     @Column(name = "user_id")
-    private UUID userID;
+    private UUID userId;
     @Column(name = "book_id")
     private Long bookId;
 
     public UserBookId(){}
     public UserBookId(UUID userId, long bookId){
-        this.userID = userId;
+        this.userId = userId;
         this.bookId = bookId;
     }
 
@@ -31,11 +31,11 @@ public class UserBookId implements Serializable {
         if(!(o instanceof UserBookId that))
             return false;
         return ((UserBookId) o).bookId == this.bookId
-                && ((UserBookId) o).userID.equals(this.userID);
+                && ((UserBookId) o).userId.equals(this.userId);
     }
     @Override
     public int hashCode(){
-        return Objects.hash(this.userID, this.bookId);
+        return Objects.hash(this.userId, this.bookId);
     }
 
 }

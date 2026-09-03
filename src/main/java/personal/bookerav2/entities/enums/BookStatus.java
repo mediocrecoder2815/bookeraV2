@@ -2,9 +2,9 @@ package personal.bookerav2.entities.enums;
 
 
 public enum BookStatus {
-    READ ("Read"),
-    READING("Reading"),
-    IN_PLANS("In plans");
+    IN_PLANS("IN PLANS"),
+    READING("READING"),
+    DONE ("DONE");
     private final String status;
 
     BookStatus(String status){

@@ -2,6 +2,7 @@ package personal.bookerav2.service;
 
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import personal.bookerav2.dto.user.UserDtoResponse;
 import personal.bookerav2.entities.Book;
@@ -13,10 +14,14 @@ import personal.bookerav2.repository.UserBookRepository;
 import personal.bookerav2.repository.UserRepository;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static personal.bookerav2.dto.wrappers.UserMapper.toUserDtoResponse;
+
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -28,15 +33,14 @@ public class UserService {
     public UserDtoResponse getMe(Principal principal){
         User owner = findUserByUsername(principal.getName());
         Set<UserBook> userBook = findUserBooks(owner.getUserId());
-        Set<Book> savedBooks = (Set<Book>) bookRepository.findAllById(
+        Set<Book> savedBooks = new HashSet<>(bookRepository.findAllById(
           userBook.stream()
-                  .map(uB -> uB.getBookId()).
+                  .map(uB -> uB.getBookId().getBookId()).
                   collect(Collectors.toSet())
-        );
+        ));
+        log.debug(toUserDtoResponse(owner,savedBooks, userBook).toString());
+        return toUserDtoResponse(owner,savedBooks, userBook);
 
-
-//        return
-        // TODO: add back UserMapper.toUserDto after adding the user <-> book relation
     }
 
 

@@ -4,6 +4,7 @@ package personal.bookerav2.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import personal.bookerav2.dto.user.UserDtoResponse;
@@ -12,7 +13,9 @@ import personal.bookerav2.service.UserService;
 
 import java.security.Principal;
 
-@RestController("/api/users")
+@RestController
+@RequestMapping("/api/users")
+
 @AllArgsConstructor
 public class UserController {
 
@@ -20,7 +23,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserDtoResponse> getMe(Principal principal){
-
+        return ResponseEntity.ok(userService.getMe(principal));
     }
 
 }
