@@ -26,12 +26,6 @@ public class JwtService {
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    /**
-     * Takes: a username and its roles.
-     * Does: builds a signed JWT with the username as subject, a "roles" claim,
-     * and issuedAt/expiration derived from {@link #expirationMs}.
-     * Returns: the compact JWT string.
-     */
     public String generateToken(String username, List<String> roles) {
         if (username == null || roles == null) {
             throw new IllegalArgumentException("Wrong input");
@@ -46,12 +40,6 @@ public class JwtService {
                 .compact();
     }
 
-
-    /**
-     * Takes: a JWT string.
-     * Does: verifies the signature and parses the payload into claims.
-     * Returns: the parsed Claims (subject, roles, issuedAt, expiration, ...).
-     */
     public Claims extractAllClaims(String token) {
         if (token == null || token.isBlank()) {
             throw new IllegalArgumentException("Ivalid token");
@@ -63,11 +51,6 @@ public class JwtService {
                 .getPayload();
     }
 
-    /**
-     * Takes: a JWT string.
-     * Returns: the username stored as the token's subject, or null if the token
-     * is invalid.
-     */
     public String extractUsername(String token) {
         var username = this.extractAllClaims(token).getSubject();
         if (username == null || username.isBlank()) {
@@ -76,11 +59,6 @@ public class JwtService {
         return username;
     }
 
-    /**
-     * Takes: a JWT string and a username.
-     * Returns: true if the token's subject matches the username and it has not
-     * expired; false otherwise (including any parse/signature failure).
-     */
     public boolean isTokenValid(String token, String username) {
         if (token == null || username == null) {
             throw new IllegalArgumentException("Wrong input");

@@ -40,8 +40,8 @@ reviews) becomes core functionality — nothing gets cut.
 
 - [x] Wire up `book_user` + `BookStatus`: `PUT /api/me/books/{bookId}` (status change), `GET /api/me/books?status=READ`
 - [x] `BookDtoResponse` includes the current user's status/rating for that book
-- [ ] Reviews bound to the authenticated user (drop `userId` from `ReviewDtoRequest`)
-- [ ] Public user profile: `GET /api/users/{id}` → shelves, reviews, stats
+- [x] Reviews bound to the authenticated user (drop `userId` from `ReviewDtoRequest`)
+- [x] Public user profile: `GET /api/users/{id}` → shelves, reviews, stats
 
 ## Phase 4 — Goodreads depth
 

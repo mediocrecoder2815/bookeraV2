@@ -10,7 +10,4 @@ public enum BookStatus {
     BookStatus(String status){
         this.status = status;
     }
-    public String getStatus(){
-        return this.status;
-    }
 }

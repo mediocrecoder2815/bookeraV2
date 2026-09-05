@@ -1,6 +1,5 @@
 package personal.bookerav2.service;
 
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,81 +17,98 @@ import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.CategoryRepository;
+import personal.bookerav2.repository.ReviewRepository;
 
-import java.util.*;
 
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class BookService {
+
     private final BookRepository bookRepository;
+    private final ReviewRepository reviewRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
 
-    public BookDtoResponse getBookById(Long id){
-        Book bookToFind = findBookById(id);
-        return BookMapper.toResponseDto(bookToFind);
+    public BookDtoResponse getBookById(Long id) {
+        Book book = findBookById(id);
+        Double avgRating = getAverageRating(book.getBookId());
+        return BookMapper.toResponseDto(book, avgRating);
     }
 
-    public Page<BookDtoAll> getAllBooks(Pageable page){
+    public Page<BookDtoAll> getAllBooks(Pageable page) {
         Page<Book> books = bookRepository.findAll(page);
-        log.info("Retrieving {} books, page {}",page.getPageNumber(), page.getOffset());
+        log.info("Retrieving {} books, page {}", page.getPageNumber(), page.getOffset());
         return books.map(BookMapper::toAllBookDto);
     }
 
     @Transactional
-    public BookDtoResponse createBook(BookDtoRequest book){
-        Book newBook = BookMapper.toBook(book);
-        Author author = findAuthorById(book.authorId());
+    public BookDtoResponse createBook(BookDtoRequest bookRequest) {
+        Book newBook = BookMapper.toBook(bookRequest);
+        Author author = findAuthorById(bookRequest.authorId());
         log.info("Trying to create book: {}", newBook);
-        if(book.categoriesId() != null){
-            List<Category> categories = new ArrayList<>();
-            for(Integer id : book.categoriesId()){
-                categories.add(categoryRepository.findById(id).orElseThrow(
-                        () -> new ResourceNotFound("Category with id " + id + " not found")
-                ));
-            }
-            newBook.setCategories(new HashSet<>(categories));
+
+        if (bookRequest.categoriesId() != null) {
+            Set<Category> categories = bookRequest.categoriesId().stream()
+                    .map(id -> categoryRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFound("Category with id " + id + " not found")))
+                    .collect(Collectors.toSet());
+            newBook.setCategories(categories);
         }
+
         newBook.getAuthors().add(author);
-        bookRepository.save(newBook);
-        log.info("Created book: {}", newBook);
-        return BookMapper.toResponseDto(newBook);
+        Book savedBook = bookRepository.save(newBook);
+        log.info("Created book: {}", savedBook);
+
+        Double avgRating = getAverageRating(savedBook.getBookId());
+        return BookMapper.toResponseDto(savedBook, avgRating);
     }
 
-    public void deleteBookById(Long id){
+    public void deleteBookById(Long id) {
         Book bookToDelete = findBookById(id);
         log.info("Deleting book with id: {}", id);
+
         authorRepository.findByBooks_BookId(id).forEach(
-                a -> a.getBooks().remove(bookToDelete)
+                author -> author.getBooks().remove(bookToDelete)
         );
         // TODO: when deleting a book it must also be deleted from user_books
 
         bookRepository.delete(bookToDelete);
-        log.info("Book with id {} | was deleted", id);
+        log.info("Book with id {} was deleted", id);
     }
 
-
-
     @Transactional
-    public BookDtoResponse updateBook(BookDtoRequest bookRequest, Long bookId){
+    public BookDtoResponse updateBook(BookDtoRequest bookRequest, Long bookId) {
         Book bookToUpdate = findBookById(bookId);
         bookToUpdate.setName(bookRequest.name());
         bookToUpdate.setIsbn(bookRequest.isbn());
         bookToUpdate.setDescription(bookRequest.description());
         bookToUpdate.setTotalPages(bookRequest.totalPages());
         bookToUpdate.setDateOfPublish(bookRequest.dateOfPublish());
-        bookRepository.save(bookToUpdate);
-        return BookMapper.toResponseDto(bookToUpdate);
+
+        Book savedBook = bookRepository.save(bookToUpdate);
+        Double avgRating = getAverageRating(savedBook.getBookId());
+        return BookMapper.toResponseDto(savedBook, avgRating);
     }
 
-    private Book findBookById(long id){
-        return bookRepository.findById(id).
-                orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
+    private Double getAverageRating(Long bookId) {
+        if (bookId == null) {
+            return 0.0;
+        }
+        Double avg = reviewRepository.findAverageRatingByBookId(bookId);
+        return avg != null ? avg : 0.0;
     }
-    private Author findAuthorById(Long id){
-        return authorRepository.findById(id).
-                orElseThrow(() -> new ResourceNotFound("Author with id " + id + "not found!"));
+
+    private Book findBookById(long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
+    }
+
+    private Author findAuthorById(Long id) {
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Author with id " + id + " not found!"));
     }
 }

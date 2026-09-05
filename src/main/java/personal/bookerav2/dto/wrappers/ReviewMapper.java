@@ -1,6 +1,5 @@
 package personal.bookerav2.dto.wrappers;
 
-import org.springframework.stereotype.Component;
 import personal.bookerav2.dto.reviews.ReviewDtoRequest;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.dto.reviews.ReviewBookDto;

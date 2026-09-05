@@ -4,15 +4,15 @@ package personal.bookerav2.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.dto.user.UserBookDtoRequest;
 import personal.bookerav2.dto.user.UserDtoResponse;
-import personal.bookerav2.entities.Book;
-import personal.bookerav2.entities.User;
-import personal.bookerav2.entities.UserBook;
-import personal.bookerav2.entities.UserBookId;
-import personal.bookerav2.entities.enums.BookStatus;
+import personal.bookerav2.dto.wrappers.ReviewMapper;
+import personal.bookerav2.entities.*;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.BookRepository;
+import personal.bookerav2.repository.ReviewRepository;
 import personal.bookerav2.repository.UserBookRepository;
 import personal.bookerav2.repository.UserRepository;
 
@@ -29,12 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserBookRepository userBookRepository;
     private final BookRepository bookRepository;
-
-    private final Map<BookStatus, Short> statusMap = Map.of(
-            BookStatus.IN_PLANS, (short) 1,
-            BookStatus.READING, (short) 2,
-            BookStatus.DONE, (short) 3
-    );
+    private final ReviewRepository reviewRepository;
 
     public UserDtoResponse getMe(Principal principal){
         User owner = findUserByUsername(principal.getName());
@@ -44,23 +39,27 @@ public class UserService {
                   .map(uB -> uB.getBookId().getBookId()).
                   collect(Collectors.toSet())
         ));
-        log.debug(toUserDtoResponse(owner,savedBooks, userBook).toString());
-        return toUserDtoResponse(owner,savedBooks, userBook);
+        Set<Review> reviews = reviewRepository.findByUser(owner);
+        Set<ReviewDtoResponse> reviewDtos = reviews.stream().
+                map(ReviewMapper::toReviewDtoResponse).
+                collect(Collectors.toSet());
+        return toUserDtoResponse(owner,savedBooks, userBook, reviewDtos);
     }
 
+    @Transactional
     public UserDtoResponse addBook(Principal principal, UserBookDtoRequest userBook) {
         User owner = findUserByUsername(principal.getName());
         Book bookToAdd = findBookById(userBook.bookId());
         Set<UserBook> ub = findUserBooks(owner.getUserId());
         for (UserBook book : ub ){
-            if (book.getBookId().equals(userBook.bookId())){
+            if (book.getBookId().getBookId().equals(userBook.bookId())){
                 throw new UnsupportedOperationException("Already in the shelf");
             }
         }
         UserBook newUserBook = new UserBook();
         newUserBook.setUserId(owner);
         newUserBook.setBookId(bookToAdd);
-        newUserBook.setBookStatus(statusMap.get(BookStatus.IN_PLANS));
+        newUserBook.setBookStatus(userBook.statusId());
         newUserBook.setUserBookId(new UserBookId(owner.getUserId(), userBook.bookId()));
         userBookRepository.save(newUserBook);
         return getMe(principal);

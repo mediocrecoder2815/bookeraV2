@@ -1,6 +1,5 @@
 package personal.bookerav2.dto.wrappers;
 
-import org.springframework.stereotype.Component;
 import personal.bookerav2.dto.books.BookAuthorDto;
 import personal.bookerav2.dto.books.BookDtoAll;
 import personal.bookerav2.dto.books.BookDtoRequest;
@@ -13,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BookMapper {
-    public static BookDtoResponse toResponseDto(Book book){
+    public static BookDtoResponse toResponseDto(Book book, Double avg){
         return new BookDtoResponse(
                 book.getBookId(),
                 book.getName(),
@@ -24,6 +23,7 @@ public class BookMapper {
                         .stream()
                         .map(BookMapper::toAuthorDto)
                         .collect(Collectors.toSet()),
+                avg,
                 book.getCategories(),
                 book.getReviews()
                         .stream()

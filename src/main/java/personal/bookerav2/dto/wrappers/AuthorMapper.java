@@ -1,6 +1,5 @@
 package personal.bookerav2.dto.wrappers;
 
-import org.springframework.stereotype.Component;
 import personal.bookerav2.dto.authors.AuthorBookDto;
 import personal.bookerav2.dto.authors.AuthorDtoAll;
 import personal.bookerav2.dto.authors.AuthorDtoRequest;

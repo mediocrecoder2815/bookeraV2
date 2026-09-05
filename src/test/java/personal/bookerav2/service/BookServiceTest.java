@@ -28,7 +28,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import personal.bookerav2.exceptions.ResourceNotFound;
-import personal.bookerav2.repository.UserRepository;
+import personal.bookerav2.repository.ReviewRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +48,7 @@ class BookServiceTest {
     private CategoryRepository categoryRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private ReviewRepository reviewRepository;
 
     @InjectMocks
     private BookService bookService;
@@ -121,10 +121,11 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
+                        null,
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
-                mapper.when(() -> BookMapper.toResponseDto(book)).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(eq(book), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.getBookById(1L);
 
@@ -179,12 +180,13 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
-                        new HashSet<>(),
+                        null,
+                        new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
 
                 mapper.when(() -> BookMapper.toBook(bookDtoRequest)).thenReturn(newBook);
-                mapper.when(() -> BookMapper.toResponseDto(any(Book.class))).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.createBook(bookDtoRequest);
 
@@ -211,12 +213,13 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
+                        null,
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
 
                 mapper.when(() -> BookMapper.toBook(bookDtoRequestWithCategories)).thenReturn(newBook);
-                mapper.when(() -> BookMapper.toResponseDto(any(Book.class))).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.createBook(bookDtoRequestWithCategories);
 
@@ -241,10 +244,11 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
+                        null,
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
-                mapper.when(() -> BookMapper.toResponseDto(any(Book.class))).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.updateBook(bookDtoRequest, 1L);
 

@@ -1,6 +1,11 @@
 package personal.bookerav2.dto.user;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 public record UserBookDtoRequest(
-        Long bookId,
-        Short statusId
+
+        @NotNull Long bookId,
+        @Max(3) @Min(1) Short statusId
 ) { }

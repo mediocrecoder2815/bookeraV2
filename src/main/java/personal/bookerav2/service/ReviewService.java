@@ -17,7 +17,6 @@ import personal.bookerav2.repository.ReviewRepository;
 import personal.bookerav2.repository.UserRepository;
 
 import java.security.Principal;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -47,7 +46,6 @@ public class ReviewService{
     }
     public void deleteReview(Long id, Principal principal){
         Review r = findReviewById(id);
-        String ownerUsername = r.getUser().getUsername();
         if (!r.getUser().getUsername().equals(principal.getName())){
             throw new InvalidCredentialsException("Nice try");
         }
@@ -62,11 +60,6 @@ public class ReviewService{
     private Book findBookById(long id){
         return bookRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFound("Book with id + " + id + " doesn't exists")
-        );
-    }
-    private User findUserById(UUID id){
-        return userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFound("User with id " + id + " doesn't exists")
         );
     }
 

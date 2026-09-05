@@ -4,9 +4,6 @@ package personal.bookerav2.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import personal.bookerav2.entities.enums.BookStatus;
-
-import java.util.UUID;
 
 @Entity
 @Getter

@@ -1,11 +1,14 @@
 package personal.bookerav2.dto.wrappers;
 
+import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.dto.user.UserBooksDto;
 import personal.bookerav2.dto.user.UserDtoResponse;
+import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.User;
 import personal.bookerav2.entities.UserBook;
 import personal.bookerav2.entities.enums.BookStatus;
+import personal.bookerav2.exceptions.ResourceNotFound;
 
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +20,7 @@ public class UserMapper {
             (short) 2, BookStatus.READING,
             (short) 3, BookStatus.DONE
     );
-    public static UserDtoResponse toUserDtoResponse(User user, Set<Book> books, Set<UserBook> userBooks){
+    public static UserDtoResponse toUserDtoResponse(User user, Set<Book> books, Set<UserBook> userBooks, Set<ReviewDtoResponse> reviews){
         return new UserDtoResponse(
                 user.getUsername(),
                 user.getAvatarUrl(),
@@ -29,16 +32,17 @@ public class UserMapper {
                                 b.getPictureUrl(),
                                 b.getAuthors().
                                         stream()
-                                        .map(a -> a.getFullName())
+                                        .map(Author::getFullName)
                                         .toList(),
                                         statusMap.get(userBooks.stream().
                                                 filter(ub -> ub.getBookId().equals(b))
-                                                .findAny().get()
+                                                .findAny().orElseThrow(() -> new ResourceNotFound("Not found!"))
                                                 .getBookStatus())
                                         )
 
 
                                 ).collect(Collectors.toSet()),
+                                reviews,
                                 user.getName(),
                                 user.getSurname()
         );
