@@ -14,6 +14,7 @@ import java.util.UUID;
 public class UserBookId implements Serializable {
     @Column(name = "user_id")
     private UUID userId;
+
     @Column(name = "book_id")
     private Long bookId;
 

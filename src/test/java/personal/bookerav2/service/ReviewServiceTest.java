@@ -76,7 +76,6 @@ class ReviewServiceTest {
 
         reviewDtoRequest = new ReviewDtoRequest(
                 "Great book",
-                user.getUsername(),
                 (short) 5
         );
     }
@@ -161,7 +160,7 @@ class ReviewServiceTest {
                 );
                 mapper.when(() -> ReviewMapper.toReviewDtoResponse(any(Review.class))).thenReturn(expected);
 
-                ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", user.getUsername(), (short) 4);
+                ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", (short) 4);
                 ReviewDtoResponse result = reviewService.updateReview(updateRequest, 1L, principal);
 
                 assertNotNull(result);

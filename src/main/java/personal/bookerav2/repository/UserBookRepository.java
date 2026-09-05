@@ -13,4 +13,5 @@ import java.util.UUID;
 @Repository
 public interface UserBookRepository extends JpaRepository<UserBook, UserBookId> {
     Set<UserBook> findByUserId_UserId(UUID userID);
+
 }

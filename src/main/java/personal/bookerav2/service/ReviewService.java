@@ -31,9 +31,6 @@ public class ReviewService{
         Review review = ReviewMapper.toReview(r);
         Book bookToFind = findBookById(bookId);
         User userToFind = findUserByUsername(principal.getName());
-        if (!userToFind.getUsername().equals(r.username())){
-            throw new InvalidCredentialsException("Wrong user");
-        }
         review.setBook(bookToFind);
         review.setUser(userToFind);
         return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));

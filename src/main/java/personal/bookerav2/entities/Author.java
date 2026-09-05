@@ -45,9 +45,7 @@ public class Author {
     @Column(name = "picture_url", nullable = true)
     String pictureUrl;
 
-    public String getFullName(){
-        return this.name + this.surname;
-    }
+    public String getFullName(){return this.name + " " + this.surname;}
     public String getFullCountryName(){
         return country.getCountyName();
     }

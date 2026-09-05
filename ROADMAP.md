@@ -38,8 +38,8 @@ reviews) becomes core functionality — nothing gets cut.
 
 ## Phase 3 — Book tracking (Goodreads core #2)
 
-- [ ] Wire up `book_user` + `BookStatus`: `PUT /api/me/books/{bookId}` (status change), `GET /api/me/books?status=READ`
-- [ ] `BookDtoResponse` includes the current user's status/rating for that book
+- [x] Wire up `book_user` + `BookStatus`: `PUT /api/me/books/{bookId}` (status change), `GET /api/me/books?status=READ`
+- [x] `BookDtoResponse` includes the current user's status/rating for that book
 - [ ] Reviews bound to the authenticated user (drop `userId` from `ReviewDtoRequest`)
 - [ ] Public user profile: `GET /api/users/{id}` → shelves, reviews, stats
 
