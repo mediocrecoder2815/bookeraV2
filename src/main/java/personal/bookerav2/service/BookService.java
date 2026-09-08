@@ -36,6 +36,9 @@ public class BookService {
     public BookDtoResponse getBookById(Long id) {
         Book book = findBookById(id);
         Double avgRating = getAverageRating(book.getBookId());
+        int reviewCount = reviewRepository.findReviewCountByBookId(id);
+        book.setReviewCount(reviewCount);
+        bookRepository.save(book);
         return BookMapper.toResponseDto(book, avgRating);
     }
 

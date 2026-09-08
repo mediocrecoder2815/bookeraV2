@@ -14,6 +14,7 @@ public record BookDtoResponse (
         String description,
         Set<BookAuthorDto> authors,
         Double rating,
+        Integer reviewCount,
         Set<Category> categorySet,
         Set<ReviewBookDto> reviews
 ){

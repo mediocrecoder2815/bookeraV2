@@ -121,7 +121,7 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
-                        null,
+                        null,null,
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
@@ -180,7 +180,7 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
-                        null,
+                        null,null,
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
@@ -213,7 +213,7 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
-                        null,
+                        null,null,
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );
@@ -244,7 +244,7 @@ class BookServiceTest {
                 BookDtoResponse expected = new BookDtoResponse(
                         1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
-                        null,
+                        null,null,
                         new HashSet<>(Set.of(category)),
                         new HashSet<>()
                 );

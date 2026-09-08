@@ -24,6 +24,7 @@ public class BookMapper {
                         .map(BookMapper::toAuthorDto)
                         .collect(Collectors.toSet()),
                 avg,
+                book.getReviewCount(),
                 book.getCategories(),
                 book.getReviews()
                         .stream()

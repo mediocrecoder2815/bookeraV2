@@ -3,6 +3,7 @@ package personal.bookerav2.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,6 +63,12 @@ public class Book {
 
     @Column(name = "picture_url", nullable = true)
     String pictureUrl;
+
+    @Column(name = "avg_rating")
+    BigDecimal avgRating = new BigDecimal(0.0);
+
+    @Column(name = "review_count")
+    Integer reviewCount = new Integer(0);
 
     @Override
     public String toString() {

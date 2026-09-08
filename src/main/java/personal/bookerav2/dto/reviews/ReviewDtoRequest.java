@@ -1,5 +1,7 @@
 package personal.bookerav2.dto.reviews;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -7,7 +9,7 @@ import java.util.UUID;
 
 public record ReviewDtoRequest(
         @NotBlank String content,
-        @NotNull Short rating
+        @NotNull @Max(5) @Min(0) Short rating
 ){
     public ReviewDtoRequest{
         if(rating > 5 || rating < 0){

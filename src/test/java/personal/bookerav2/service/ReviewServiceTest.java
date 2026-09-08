@@ -87,6 +87,7 @@ class ReviewServiceTest {
         @Test
         void shouldCreateReviewSuccessfully() {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
             when(principal.getName()).thenReturn(user.getUsername());
             when(reviewRepository.save(any(Review.class))).thenReturn(review);

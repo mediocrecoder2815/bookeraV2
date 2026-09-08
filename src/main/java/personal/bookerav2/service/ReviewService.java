@@ -16,7 +16,9 @@ import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.ReviewRepository;
 import personal.bookerav2.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -30,9 +32,15 @@ public class ReviewService{
         Review review = ReviewMapper.toReview(r);
         Book bookToFind = findBookById(bookId);
         User userToFind = findUserByUsername(principal.getName());
+        if(principal == null){
+            throw new InvalidCredentialsException("NO token, no comment");
+        }
         review.setBook(bookToFind);
         review.setUser(userToFind);
-        return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
+        Review reviewToSave = reviewRepository.save(review);
+        calculateBookAvg(bookToFind);
+        calculateReviewCount(bookToFind);
+        return ReviewMapper.toReviewDtoResponse(reviewToSave);
     }
     @Transactional
     public ReviewDtoResponse updateReview(ReviewDtoRequest r, Long reviewId, Principal principal){
@@ -42,14 +50,21 @@ public class ReviewService{
         }
         review.setRating(r.rating());
         review.setContent(r.content());
-        return ReviewMapper.toReviewDtoResponse(reviewRepository.save(review));
+        Review reviewToSave = reviewRepository.save(review);
+        Book bookToChange = review.getBook();
+        calculateBookAvg(bookToChange);
+        return ReviewMapper.toReviewDtoResponse(reviewToSave);
     }
+
     public void deleteReview(Long id, Principal principal){
         Review r = findReviewById(id);
         if (!r.getUser().getUsername().equals(principal.getName())){
             throw new InvalidCredentialsException("Nice try");
         }
+        Book deletedBookReview = r.getBook();
         reviewRepository.delete(r);
+        calculateReviewCount(deletedBookReview);
+        calculateBookAvg(deletedBookReview);
     }
     public ReviewDtoResponse getReviewById(Long id){
         return ReviewMapper.toReviewDtoResponse(findReviewById(id));
@@ -57,9 +72,9 @@ public class ReviewService{
 
 
     // helpers
-    private Book findBookById(long id){
+    private Book findBookById(Long id){
         return bookRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFound("Book with id + " + id + " doesn't exists")
+                () -> new ResourceNotFound("Book with id " + id + " doesn't exists")
         );
     }
 
@@ -73,5 +88,15 @@ public class ReviewService{
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new ResourceNotFound("User with such username " + username + "doesn't exists!")
         );
+    }
+    private void calculateBookAvg(Book book){
+        Double reviewScore = reviewRepository.findAverageRatingByBookId(book.getBookId());
+        book.setAvgRating(new BigDecimal(reviewScore));
+        bookRepository.save(book);
+    }
+    private void calculateReviewCount(Book book){
+        Integer count = reviewRepository.findReviewCountByBookId(book.getBookId());
+        book.setReviewCount(count);
+        bookRepository.save(book);
     }
 }
