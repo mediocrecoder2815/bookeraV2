@@ -3,12 +3,16 @@ package personal.bookerav2.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.dto.user.UserBookDtoRequest;
+import personal.bookerav2.dto.user.UserBooksDto;
 import personal.bookerav2.dto.user.UserDtoResponse;
+import personal.bookerav2.dto.user.UserShelfDto;
 import personal.bookerav2.dto.wrappers.ReviewMapper;
+import personal.bookerav2.dto.wrappers.UserMapper;
 import personal.bookerav2.entities.*;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.BookRepository;
@@ -83,6 +87,13 @@ public class UserService {
         return getMe(principal);
     }
 
+    public UserShelfDto getShelf(Principal principal) {
+        User u = findUserByUsername(principal.getName());
+        Set<UserBook> userBooks = findUserBooks(u.getUserId());
+        return UserMapper.toUserShelf(u.getUserId(), userBooks);
+    }
+
+
 
     private User findUserByUsername(String username){
         return userRepository.findByUsername(username)
@@ -92,8 +103,8 @@ public class UserService {
         return bookRepository.findById(bookId).orElseThrow(
                 () -> new ResourceNotFound("Book with id " + bookId + " doesn't exists"));
     }
+
     private Set<UserBook> findUserBooks(UUID userId){
         return userBookRepository.findByUserId_UserId(userId);
     }
-
 }

@@ -38,7 +38,7 @@ public class BookMapper {
     }
 
     public static BookDtoAll toAllBookDto(Book book){
-        return new BookDtoAll(book.getBookId(), book.getName(), book.getPictureUrl());
+        return new BookDtoAll(book.getBookId(), book.getName(), book.getPictureUrl(), book.getAvgRating());
     }
     private static BookAuthorDto toAuthorDto(Author author){
         return new BookAuthorDto(

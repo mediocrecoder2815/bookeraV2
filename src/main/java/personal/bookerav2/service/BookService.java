@@ -20,6 +20,7 @@ import personal.bookerav2.repository.CategoryRepository;
 import personal.bookerav2.repository.ReviewRepository;
 
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,12 +35,10 @@ public class BookService {
     private final CategoryRepository categoryRepository;
 
     public BookDtoResponse getBookById(Long id) {
-        Book book = findBookById(id);
-        Double avgRating = getAverageRating(book.getBookId());
-        int reviewCount = reviewRepository.findReviewCountByBookId(id);
-        book.setReviewCount(reviewCount);
-        bookRepository.save(book);
-        return BookMapper.toResponseDto(book, avgRating);
+        Book book = syncReviews(id);
+        return BookMapper.toResponseDto(book, book.getAvgRating().
+                toBigInteger()
+                .doubleValue());
     }
 
     public Page<BookDtoAll> getAllBooks(Pageable page) {
@@ -109,7 +108,14 @@ public class BookService {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
     }
-
+    private Book syncReviews(Long bookId){
+        Book book = findBookById(bookId);
+        int reviewCount = reviewRepository.findReviewCountByBookId(bookId);
+        BigDecimal avg = new BigDecimal(reviewRepository.findAverageRatingByBookId(book.getBookId()));
+        book.setReviewCount(reviewCount);
+        book.setAvgRating(avg);
+        return bookRepository.save(book);
+    }
     private Author findAuthorById(Long id) {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Author with id " + id + " not found!"));

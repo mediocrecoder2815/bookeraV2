@@ -3,6 +3,7 @@ package personal.bookerav2.dto.wrappers;
 import personal.bookerav2.dto.reviews.ReviewDtoResponse;
 import personal.bookerav2.dto.user.UserBooksDto;
 import personal.bookerav2.dto.user.UserDtoResponse;
+import personal.bookerav2.dto.user.UserShelfDto;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.User;
@@ -12,6 +13,7 @@ import personal.bookerav2.exceptions.ResourceNotFound;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class UserMapper {
@@ -46,5 +48,17 @@ public class UserMapper {
                                 user.getName(),
                                 user.getSurname()
         );
+    }
+    public static UserShelfDto toUserShelf(UUID owner, Set<UserBook> userBooks){
+        return new UserShelfDto(owner,
+                                userBooks.
+                                        stream()
+                                        .map(b ->
+                                                new UserBooksDto(
+                                                        b.getBookId().getBookId(),
+                                                        b.getBookId().getName(),
+                                                        b.getBookId().getPictureUrl(),
+                                                        b.getBookId().getAuthors().stream().map(a -> a.getFullName()).toList(),
+                                                        statusMap.get(b.getBookStatus()))).collect(Collectors.toSet()));
     }
 }

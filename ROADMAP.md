@@ -45,11 +45,12 @@ reviews) becomes core functionality — nothing gets cut.
 
 ## Phase 4 — Goodreads depth
 
-- [ ] Average rating + rating distribution per book (aggregation query)
+- [x] Average rating + rating distribution per book (aggregation query)
 - [ ] Custom bookshelves (user-defined many-to-many)
 - [ ] Reading progress: % complete, start/finish dates on `book_user`
 - [ ] Recommendations v1: "authors you already read" / "top-rated in your categories"
 - [ ] Reading challenge: yearly goal + progress
+//skipped
 
 ## Phase 5 — Polish & scale
 

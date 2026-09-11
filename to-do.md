@@ -1,7 +1,7 @@
 # TO-DO
 - [x] alter scheme, maybe add avg rating, comment count, etc.. column
-- [ ] add tests
+- [x] add tests
 - [ ] caching? 
 - [ ] add dates (when finished/added/started reading)
 - [ ] maybe add multiple shelfs support
-- [ ] clean-up
+- [x] clean-up
