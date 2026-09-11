@@ -1,77 +1,84 @@
-# Roadmap — bookeraV2 → Goodreads-like API
+# Roadmap — bookeraV2 (Goodreads-like API)
 
 **Vision:** a Goodreads-style book-tracking API. Users register, track books
 (want-to-read / currently-reading / read), rate & review them, and browse authors
-and categories. Everything currently "unused" (`users`, `book_user`, `BookStatus`,
-reviews) becomes core functionality — nothing gets cut.
+and categories.
 
-**Note:** Phase 0 items are real bugs found during manual QA (see `report.md`).
+**Reality check (2026-09):** the app compiles and the core flow works — auth with
+JWT, book/author/category CRUD, reviews, user shelf, Swagger UI. **98 tests, 2
+fail** (see below). This roadmap only lists what is true or actually getting built.
 
 ---
 
-## Phase 0 — Fix the foundation (bugs from manual QA)
+## Current state — things that are genuinely done
 
-- [x] Fix `POST /api/authors` → 500: NPE in `AuthorMapper.toResponseDto` because
-      `Author.books` is never initialized (`Author.java:36`). Initialize it or null-guard the mapper
-- [x] `pictureUrl`: add to `BookDtoRequest`/`AuthorDtoRequest` + mappers; persist on create **and** update
-- [x] Add `@Valid` + `@NotBlank`/`@NotNull`/`@Size` to all request DTOs; missing required fields → 400
-- [x] Handle `DataIntegrityViolationException` → 409 in `GlobalExceptionHandler` (FK-constrained deletes currently 500)
-- [x] Validate query params — whitelist `sortBy` columns, reject negative `page` → 400
-- [x] Tests for the error handler: 400 / 404 / 409 paths (only service-layer Mockito tests exist today)
-- [x] Remove unused imports / compile warnings
+- [x] `Flyway` owns the schema (12 migrations), `ddl-auto=validate`
+- [x] JWT auth: `POST /api/auth/register|login` (Roles: USER/ADMIN)
+- [x] Read-only catalog (`GET /api/books|authors|categories`) public; writes require a token
+- [x] Book / author / category CRUD with validation + global error handler (400/404/409)
+- [x] Reviews bound to the authenticated user via `Principal`
+- [x] User shelf: add book, change `BookStatus`, get shelf (`/api/users/shelf`)
+- [x] Average rating on books (aggregation query)
+- [x] Swagger UI at `/swagger-ui.html` (springdoc, Bearer JWT scheme)
+- [x] Dockerfile + docker-compose (app + postgres, secrets via env)
 
-## Phase 1 — DB safety + observability
+### Not actually done (either claims or checked off prematurely)
 
-- [x] Flyway: `V1__init.sql` from current schema, seed via migration
-- [x] Kill `data.sql` auto re-seed (`spring.sql.init.mode=always` + `DELETE FROM` wipes all data on every startup)
-- [x] `ddl-auto=update` → `validate` (Flyway owns the schema)
-- [x] Add `spring-boot-starter-actuator` + `/actuator/health`
-- [x] `docker-compose.yml` (app + postgres, secrets via env vars) + multi-stage `Dockerfile`
+- [x] **Rating distribution** per book — checked in the old roadmap, not implemented
 
-## Phase 2 — Users & auth (Goodreads core #1)
+---
 
-- [x] Spring Security + JWT:
-      `POST /api/auth/register`, `POST /api/auth/login` → JWT
-- [x] Protect write endpoints; keep read-only catalog (`GET`) public
-- [x] `UserService.getCurrentUser()` from JWT — no more guessing `userId` from request bodies
-- [x] Uncomment/adapt `SecurityConfig.java`
+## Step 1 — Make the build honest ("green or gone")
 
-## Phase 3 — Book tracking (Goodreads core #2)
+- [x] Fix `BookServiceTest.shouldReturnBookWhenFound` — broken mock: `findById` returns
+      `null`, NPE at `BookService.getBookById` (BookService.java:39)
+- [x] Fix `ReviewServiceTest.shouldThrowWhenPrincipalMismatch` — flaky
+      (mock ordering issue in `createReview` path)
+- [x] Un-check "rating distribution" claim → implement it (grouped `count(*)` query)
+      **or** delete the claim from the docs entirely
+- [ ] Add a `README.md`: how to run, required env vars (`DB_URL`, `DB_PASSWORD`,
+      `JWT_SECRET`), API overview, how to open Swagger
+- [x] Decide the fate of `report.md`: create it for real or drop all references
+- [x] `git status` clean, `./mvnw test` green, repeat the run 3x to confirm no flakes
 
-- [x] Wire up `book_user` + `BookStatus`: `PUT /api/me/books/{bookId}` (status change), `GET /api/me/books?status=READ`
-- [x] `BookDtoResponse` includes the current user's status/rating for that book
-- [x] Reviews bound to the authenticated user (drop `userId` from `ReviewDtoRequest`)
-- [x] Public user profile: `GET /api/users/{id}` → shelves, reviews, stats
+## Step 2 — Picture upload (chosen next feature)
 
-## Phase 4 — Goodreads depth
+- [ ] `POST /api/books/{id}/picture` + `POST /api/authors/{id}/picture`
+- [ ] Start local-filesystem storage: `MultipartFile` → `uploads/`, UUID filename,
+      store URL in `pictureUrl`, static-resource serving
+- [ ] Validate: content type (`image/png|jpeg`), max size, reject empty payloads
+- [ ] Add request param → OpenAPI docs for the new endpoints (springdoc picks up multipart)
+- [ ] Tests: success path, wrong type, oversized file, book not found (404)
+- [ ] Follow-up (only if needed for an interview answer): S3/MinIO swap-out in mind
 
-- [x] Average rating + rating distribution per book (aggregation query)
-- [ ] Custom bookshelves (user-defined many-to-many)
-- [ ] Reading progress: % complete, start/finish dates on `book_user`
-- [ ] Recommendations v1: "authors you already read" / "top-rated in your categories"
-- [ ] Reading challenge: yearly goal + progress
-//skipped
+## Step 3 — ONE depth feature (not five)
 
-## Phase 5 — Polish & scale
+Pick a single feature that reuses existing code rather than adding a new domain:
 
-- [ ] `springdoc-openapi` (Swagger UI) — great for demos/interviews
-- [ ] GitHub Actions CI: build + test on every push/PR
-- [ ] Testcontainers integration tests against real Postgres
-- [ ] Redis caching for hot reads (book details, top lists)
-- [ ] Stretch: async events (RabbitMQ/Kafka) — e.g. "friend finished a book"
-- [ ] README: how to run, env vars, API overview
-- [ ] Final manual QA re-run (mirror `report.md` checklist) + cleanup
+- [ ] **Reading progress** (% complete, start/finish dates on `book_user`) — reuses the
+      shelf feature that already exists
+- [ ] **OR** custom bookshelves (user-defined many-to-many) — same `book_user` shape
+- [ ] Skipped for now: recommendations, reading challenge, RabbitMQ/Kafka, Redis
+
+Rationale: every item so far is built and tested. Adding five half-finished features
+makes the repo *worse for interviews* than zero unused ones. When recommending myself,
+a reviewer can actually run this thing and see tests pass.
+
+## Step 4 — Polish (optional, only after Steps 1–3 are green)
+
+- [ ] GitHub Actions: `mvn test` on push (cheap, high signal)
+- [ ] Testcontainers integration test against real Postgres
+- [ ] Redis `@Cacheable` on hot reads (book details)
+- [ ] Final manual QA pass + clean up `.idea/` from the repo if not intended
 
 ---
 
 ## Tech-learning notes (why these choices)
 
-Each phase doubles as a "playground" for one job-relevant technology:
-
 - **Flyway** — schema migrations, used in every production Java shop
 - **Spring Security + JWT** — the single most-asked Spring topic in junior interviews
-- **Testcontainers** — integration testing without brittle mocks
 - **springdoc/OpenAPI** — API documentation you can show in a portfolio
+- **File upload** (Step 2) — `MultipartFile`, validation, storage — a frequent
+  interview topic and a nice file-handling playground
 - **GitHub Actions** — CI/CD basics, near-universal in job postings
-- **Redis** — caching + `@Cacheable`, common follow-up question after "why is it slow?"
-- **RabbitMQ/Kafka** — async/messaging, the classic "what do you want to learn?" answer
+- **Testcontainers** — integration testing without brittle mocks

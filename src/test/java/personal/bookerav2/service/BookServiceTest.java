@@ -116,6 +116,10 @@ class BookServiceTest {
         @Test
         void shouldReturnBookWhenFound() {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(reviewRepository.findReviewCountByBookId(1L)).thenReturn(1);
+            when(reviewRepository.findAverageRatingByBookId(1L)).thenReturn(4.5);
+            when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            when(reviewRepository.findByBook(any(Book.class))).thenReturn(Collections.emptySet());
 
             try (var mapper = mockStatic(BookMapper.class)) {
                 BookDtoResponse expected = new BookDtoResponse(
@@ -123,9 +127,10 @@ class BookServiceTest {
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),
-                        new HashSet<>()
+                        new HashSet<>(),
+                        new int[5]
                 );
-                mapper.when(() -> BookMapper.toResponseDto(eq(book), any())).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(eq(book), any(), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.getBookById(1L);
 
@@ -182,11 +187,12 @@ class BookServiceTest {
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),
-                        new HashSet<>()
+                        new HashSet<>(),
+                        new int[5]
                 );
 
                 mapper.when(() -> BookMapper.toBook(bookDtoRequest)).thenReturn(newBook);
-                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any())).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any(), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.createBook(bookDtoRequest);
 
@@ -215,11 +221,12 @@ class BookServiceTest {
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),
-                        new HashSet<>()
+                        new HashSet<>(),
+                        new int[5]
                 );
 
                 mapper.when(() -> BookMapper.toBook(bookDtoRequestWithCategories)).thenReturn(newBook);
-                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any())).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any(), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.createBook(bookDtoRequestWithCategories);
 
@@ -246,9 +253,10 @@ class BookServiceTest {
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),
-                        new HashSet<>()
+                        new HashSet<>(),
+                        new int[5]
                 );
-                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any())).thenReturn(expected);
+                mapper.when(() -> BookMapper.toResponseDto(any(Book.class), any(), any())).thenReturn(expected);
 
                 BookDtoResponse result = bookService.updateBook(bookDtoRequest, 1L);
 

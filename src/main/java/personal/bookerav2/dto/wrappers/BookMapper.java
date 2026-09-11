@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BookMapper {
-    public static BookDtoResponse toResponseDto(Book book, Double avg){
+    public static BookDtoResponse toResponseDto(Book book, Double avg, int[] rating){
         return new BookDtoResponse(
                 book.getBookId(),
                 book.getName(),
@@ -29,7 +29,8 @@ public class BookMapper {
                 book.getReviews()
                         .stream()
                         .map(ReviewMapper::toUserDto)
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toSet()),
+                rating
         );
     }
 

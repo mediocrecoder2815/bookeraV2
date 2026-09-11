@@ -15,6 +15,7 @@ import java.util.Set;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Set<Review> findByUser(User user);
+
     Set<Review> findByBook(Book book);
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.book.bookId = :bookId")

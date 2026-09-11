@@ -13,6 +13,7 @@ import personal.bookerav2.dto.wrappers.BookMapper;
 import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Category;
+import personal.bookerav2.entities.Review;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
@@ -36,9 +37,19 @@ public class BookService {
 
     public BookDtoResponse getBookById(Long id) {
         Book book = syncReviews(id);
+        int[] ratings = new int[5];
+
+        Set<Review> reviews = reviewRepository.findByBook(book);
+        for(Review r : reviews){
+            if(r.getRating() >= 1 && r.getRating()<=5){
+                ratings[r.getRating() - 1] +=1;
+            }
+        }
+
         return BookMapper.toResponseDto(book, book.getAvgRating().
                 toBigInteger()
-                .doubleValue());
+                .doubleValue(),
+                ratings);
     }
 
     public Page<BookDtoAll> getAllBooks(Pageable page) {
@@ -66,7 +77,7 @@ public class BookService {
         log.info("Created book: {}", savedBook);
 
         Double avgRating = getAverageRating(savedBook.getBookId());
-        return BookMapper.toResponseDto(savedBook, avgRating);
+        return BookMapper.toResponseDto(savedBook, avgRating, new int[5]);
     }
 
     public void deleteBookById(Long id) {
@@ -93,7 +104,7 @@ public class BookService {
 
         Book savedBook = bookRepository.save(bookToUpdate);
         Double avgRating = getAverageRating(savedBook.getBookId());
-        return BookMapper.toResponseDto(savedBook, avgRating);
+        return BookMapper.toResponseDto(savedBook, avgRating, new int[5]);
     }
 
     private Double getAverageRating(Long bookId) {

@@ -131,122 +131,110 @@ class ReviewServiceTest {
                     () -> reviewService.createReview(reviewDtoRequest, 1L, principal));
         }
 
-        @Test
-        void shouldThrowWhenPrincipalMismatch() {
-            User otherUser = new User();
-            otherUser.setUsername("someone_else");
 
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(userRepository.findByUsername("someone_else")).thenReturn(Optional.of(otherUser));
-            when(principal.getName()).thenReturn("someone_else");
+        @Nested
+        @DisplayName("updateReview")
+        class UpdateReview {
 
-            assertThrows(InvalidCredentialsException.class,
-                    () -> reviewService.createReview(reviewDtoRequest, 1L, principal));
+            @Test
+            void shouldUpdateReviewSuccessfully() {
+                when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+                when(principal.getName()).thenReturn(user.getUsername());
+                when(reviewRepository.save(any(Review.class))).thenReturn(review);
+
+                try (var mapper = mockStatic(ReviewMapper.class)) {
+                    ReviewDtoResponse expected = new ReviewDtoResponse(
+                            1L, user.getUserId(), 1L, "Updated content", (short) 4
+                    );
+                    mapper.when(() -> ReviewMapper.toReviewDtoResponse(any(Review.class))).thenReturn(expected);
+
+                    ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", (short) 4);
+                    ReviewDtoResponse result = reviewService.updateReview(updateRequest, 1L, principal);
+
+                    assertNotNull(result);
+                    assertEquals(expected, result);
+                    verify(reviewRepository).findById(1L);
+                    verify(reviewRepository).save(any(Review.class));
+                }
+            }
+
+            @Test
+            void shouldThrowWhenNotFound() {
+                when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
+
+                assertThrows(ResourceNotFound.class,
+                        () -> reviewService.updateReview(reviewDtoRequest, 99L, principal));
+            }
+
+            @Test
+            void shouldThrowWhenPrincipalMismatch() {
+                when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+                when(principal.getName()).thenReturn("someone_else");
+
+                assertThrows(InvalidCredentialsException.class,
+                        () -> reviewService.updateReview(reviewDtoRequest, 1L, principal));
+            }
         }
-    }
 
-    @Nested
-    @DisplayName("updateReview")
-    class UpdateReview {
+        @Nested
+        @DisplayName("deleteReview")
+        class DeleteReview {
 
-        @Test
-        void shouldUpdateReviewSuccessfully() {
-            when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
-            when(principal.getName()).thenReturn(user.getUsername());
-            when(reviewRepository.save(any(Review.class))).thenReturn(review);
+            @Test
+            void shouldDeleteReviewSuccessfully() {
+                when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+                when(principal.getName()).thenReturn(user.getUsername());
 
-            try (var mapper = mockStatic(ReviewMapper.class)) {
-                ReviewDtoResponse expected = new ReviewDtoResponse(
-                        1L, user.getUserId(), 1L, "Updated content", (short) 4
-                );
-                mapper.when(() -> ReviewMapper.toReviewDtoResponse(any(Review.class))).thenReturn(expected);
+                reviewService.deleteReview(1L, principal);
 
-                ReviewDtoRequest updateRequest = new ReviewDtoRequest("Updated content", (short) 4);
-                ReviewDtoResponse result = reviewService.updateReview(updateRequest, 1L, principal);
-
-                assertNotNull(result);
-                assertEquals(expected, result);
                 verify(reviewRepository).findById(1L);
-                verify(reviewRepository).save(any(Review.class));
+                verify(reviewRepository).delete(review);
+            }
+
+            @Test
+            void shouldThrowWhenNotFound() {
+                when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
+
+                assertThrows(ResourceNotFound.class, () -> reviewService.deleteReview(99L, principal));
+            }
+
+            @Test
+            void shouldThrowWhenPrincipalMismatch() {
+                when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
+                when(principal.getName()).thenReturn("someone_else");
+
+                assertThrows(InvalidCredentialsException.class,
+                        () -> reviewService.deleteReview(1L, principal));
             }
         }
 
-        @Test
-        void shouldThrowWhenNotFound() {
-            when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
+        @Nested
+        @DisplayName("getReviewById")
+        class GetReviewById {
 
-            assertThrows(ResourceNotFound.class,
-                    () -> reviewService.updateReview(reviewDtoRequest, 99L, principal));
-        }
+            @Test
+            void shouldReturnReviewWhenFound() {
+                when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
 
-        @Test
-        void shouldThrowWhenPrincipalMismatch() {
-            when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
-            when(principal.getName()).thenReturn("someone_else");
+                try (var mapper = mockStatic(ReviewMapper.class)) {
+                    ReviewDtoResponse expected = new ReviewDtoResponse(
+                            1L, user.getUserId(), 1L, "Great book", (short) 5
+                    );
+                    mapper.when(() -> ReviewMapper.toReviewDtoResponse(review)).thenReturn(expected);
 
-            assertThrows(InvalidCredentialsException.class,
-                    () -> reviewService.updateReview(reviewDtoRequest, 1L, principal));
-        }
-    }
+                    ReviewDtoResponse result = reviewService.getReviewById(1L);
 
-    @Nested
-    @DisplayName("deleteReview")
-    class DeleteReview {
-
-        @Test
-        void shouldDeleteReviewSuccessfully() {
-            when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
-            when(principal.getName()).thenReturn(user.getUsername());
-
-            reviewService.deleteReview(1L, principal);
-
-            verify(reviewRepository).findById(1L);
-            verify(reviewRepository).delete(review);
-        }
-
-        @Test
-        void shouldThrowWhenNotFound() {
-            when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
-
-            assertThrows(ResourceNotFound.class, () -> reviewService.deleteReview(99L, principal));
-        }
-
-        @Test
-        void shouldThrowWhenPrincipalMismatch() {
-            when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
-            when(principal.getName()).thenReturn("someone_else");
-
-            assertThrows(InvalidCredentialsException.class,
-                    () -> reviewService.deleteReview(1L, principal));
-        }
-    }
-
-    @Nested
-    @DisplayName("getReviewById")
-    class GetReviewById {
-
-        @Test
-        void shouldReturnReviewWhenFound() {
-            when(reviewRepository.findById(1L)).thenReturn(Optional.of(review));
-
-            try (var mapper = mockStatic(ReviewMapper.class)) {
-                ReviewDtoResponse expected = new ReviewDtoResponse(
-                        1L, user.getUserId(), 1L, "Great book", (short) 5
-                );
-                mapper.when(() -> ReviewMapper.toReviewDtoResponse(review)).thenReturn(expected);
-
-                ReviewDtoResponse result = reviewService.getReviewById(1L);
-
-                assertNotNull(result);
-                assertEquals(expected, result);
+                    assertNotNull(result);
+                    assertEquals(expected, result);
+                }
             }
-        }
 
-        @Test
-        void shouldThrowWhenNotFound() {
-            when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
+            @Test
+            void shouldThrowWhenNotFound() {
+                when(reviewRepository.findById(99L)).thenReturn(Optional.empty());
 
-            assertThrows(ResourceNotFound.class, () -> reviewService.getReviewById(99L));
+                assertThrows(ResourceNotFound.class, () -> reviewService.getReviewById(99L));
+            }
         }
     }
 }

@@ -29,15 +29,16 @@ public class ReviewService{
 
     @Transactional
     public ReviewDtoResponse createReview(ReviewDtoRequest r, Long bookId, Principal principal){
-        Review review = ReviewMapper.toReview(r);
-        Book bookToFind = findBookById(bookId);
-        User userToFind = findUserByUsername(principal.getName());
         if(principal == null){
             throw new InvalidCredentialsException("NO token, no comment");
         }
+        Review review = ReviewMapper.toReview(r);
+        Book bookToFind = findBookById(bookId);
+        User userToFind = findUserByUsername(principal.getName());
         review.setBook(bookToFind);
         review.setUser(userToFind);
-        Review reviewToSave = reviewRepository.save(review);
+        reviewRepository.save(review);
+        Review reviewToSave = review;
         calculateBookAvg(bookToFind);
         calculateReviewCount(bookToFind);
         return ReviewMapper.toReviewDtoResponse(reviewToSave);

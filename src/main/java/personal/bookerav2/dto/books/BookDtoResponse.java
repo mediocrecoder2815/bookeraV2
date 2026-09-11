@@ -16,6 +16,7 @@ public record BookDtoResponse (
         Double rating,
         Integer reviewCount,
         Set<Category> categorySet,
-        Set<ReviewBookDto> reviews
+        Set<ReviewBookDto> reviews,
+        int[] ratings
 ){
 }
