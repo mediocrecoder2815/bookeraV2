@@ -117,13 +117,13 @@ class BookServiceTest {
         void shouldReturnBookWhenFound() {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(reviewRepository.findReviewCountByBookId(1L)).thenReturn(1);
-            when(reviewRepository.findAverageRatingByBookId(1L)).thenReturn(4.5);
+            when(reviewRepository.findAverageRatingByBookId(1L)).thenReturn(Optional.of(4.5));
             when(bookRepository.save(any(Book.class))).thenAnswer(invocation -> invocation.getArgument(0));
             when(reviewRepository.findByBook(any(Book.class))).thenReturn(Collections.emptySet());
 
             try (var mapper = mockStatic(BookMapper.class)) {
                 BookDtoResponse expected = new BookDtoResponse(
-                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        1L, "1984", null, "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),
@@ -183,7 +183,7 @@ class BookServiceTest {
                 newBook.setDateOfPublish(LocalDate.of(1949, 6, 8));
 
                 BookDtoResponse expected = new BookDtoResponse(
-                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        1L, "1984", null, "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),
@@ -217,7 +217,7 @@ class BookServiceTest {
                 newBook.setDateOfPublish(LocalDate.of(1949, 6, 8));
 
                 BookDtoResponse expected = new BookDtoResponse(
-                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        1L, "1984", null, "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),
@@ -249,7 +249,7 @@ class BookServiceTest {
 
             try (var mapper = mockStatic(BookMapper.class)) {
                 BookDtoResponse expected = new BookDtoResponse(
-                        1L, "1984", "1234567890",  (short) 328, "Dystopian novel",
+                        1L, "1984", null, "1234567890",  (short) 328, "Dystopian novel",
                         Set.of(new BookAuthorDto(1L, "George", "Orwell")),
                         null,null,
                         new HashSet<>(Set.of(category)),

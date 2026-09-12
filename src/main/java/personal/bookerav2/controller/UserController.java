@@ -13,6 +13,7 @@ import personal.bookerav2.dto.user.UserBookDtoRequest;
 import personal.bookerav2.dto.user.UserBooksDto;
 import personal.bookerav2.dto.user.UserDtoResponse;
 import personal.bookerav2.dto.user.UserShelfDto;
+import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.service.UserService;
 
 import java.security.Principal;
@@ -32,7 +33,7 @@ public class UserController {
             content = @Content(schema = @Schema(implementation = UserDtoResponse.class)))
     @GetMapping("/me")
     public ResponseEntity<UserDtoResponse> getMe(Principal principal){
-        return ResponseEntity.ok(userService.getMe(principal));
+        return ResponseEntity.ok(userService.getMe(requirePrincipal(principal)));
     }
 
     @Operation(summary = "Add a book to the user's shelf",
@@ -41,7 +42,7 @@ public class UserController {
             content = @Content(schema = @Schema(implementation = UserDtoResponse.class)))
     @PostMapping("/shelf")
     public ResponseEntity<UserDtoResponse> addBook(Principal principal, @RequestBody UserBookDtoRequest userBook){
-        return ResponseEntity.ok(userService.addBook(principal, userBook));
+        return ResponseEntity.ok(userService.addBook(requirePrincipal(principal), userBook));
     }
 
     @Operation(summary = "Update a book's status on the shelf",
@@ -50,7 +51,7 @@ public class UserController {
             content = @Content(schema = @Schema(implementation = UserDtoResponse.class)))
     @PutMapping("/shelf")
     public ResponseEntity<UserDtoResponse> updateBookStatus(Principal principal, @RequestBody UserBookDtoRequest bookUpdate){
-        return ResponseEntity.ok(userService.updateStatus(principal, bookUpdate));
+        return ResponseEntity.ok(userService.updateStatus(requirePrincipal(principal), bookUpdate));
     }
 
     @Operation(summary = "Get the user's shelf",
@@ -59,6 +60,13 @@ public class UserController {
             content = @Content(schema = @Schema(implementation = UserShelfDto.class)))
     @GetMapping("/shelf")
     public ResponseEntity<UserShelfDto> getShelf(Principal principal){
-        return ResponseEntity.ok(userService.getShelf(principal));
+        return ResponseEntity.ok(userService.getShelf(requirePrincipal(principal)));
+    }
+
+    private Principal requirePrincipal(Principal principal) {
+        if (principal == null) {
+            throw new InvalidCredentialsException("Authentication required");
+        }
+        return principal;
     }
 }

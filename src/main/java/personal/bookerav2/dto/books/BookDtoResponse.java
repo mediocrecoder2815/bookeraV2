@@ -9,6 +9,7 @@ import java.util.Set;
 public record BookDtoResponse (
         Long bookId,
         String name,
+        String pictureUrl,
         String isbn,
         Short totalPages,
         String description,

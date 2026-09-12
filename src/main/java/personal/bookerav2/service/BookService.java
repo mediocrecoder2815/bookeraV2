@@ -1,11 +1,13 @@
 package personal.bookerav2.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import personal.bookerav2.dto.books.BookDtoAll;
 import personal.bookerav2.dto.books.BookDtoRequest;
 import personal.bookerav2.dto.books.BookDtoResponse;
@@ -14,6 +16,7 @@ import personal.bookerav2.entities.Author;
 import personal.bookerav2.entities.Book;
 import personal.bookerav2.entities.Category;
 import personal.bookerav2.entities.Review;
+import personal.bookerav2.exceptions.InvalidFileException;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
@@ -21,19 +24,28 @@ import personal.bookerav2.repository.CategoryRepository;
 import personal.bookerav2.repository.ReviewRepository;
 
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
     private final ReviewRepository reviewRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
     public BookDtoResponse getBookById(Long id) {
         Book book = syncReviews(id);
@@ -107,14 +119,43 @@ public class BookService {
         return BookMapper.toResponseDto(savedBook, avgRating, new int[5]);
     }
 
+    public BookDtoResponse updateBookImage(Long bookId, MultipartFile file) throws IOException {
+        if(file.isEmpty() || file == null){
+            throw new InvalidFileException("No file was found");
+        }
+        Book book = findBookById(bookId);
+
+        Path booksDir = Path.of(uploadDir, "books").toAbsolutePath();
+        Files.createDirectories(booksDir);
+
+        if (book.getPictureUrl() != null) {
+            Files.deleteIfExists(resolveStoredFile(booksDir, book.getPictureUrl()));
+        }
+        UUID pictureId = UUID.randomUUID();
+        String extension = switch (file.getContentType()) {
+            case "image/png"  -> ".png";
+            case "image/webp" -> ".webp";
+            case "image/gif"  -> ".gif";
+            default           -> ".jpg";
+        };
+        String filename = pictureId + extension;
+        String ct = file.getContentType();
+        if (ct == null || !List.of("image/jpeg","image/png","image/webp","image/gif").contains(ct)) {
+            throw new InvalidFileException("Unsupported image type: " + ct);
+        }
+        file.transferTo(booksDir.resolve(filename).toFile());
+        book.setPictureUrl("/uploads/books/" + filename);
+        bookRepository.save(book);
+        return getBookById(bookId);
+    }
+
     private Double getAverageRating(Long bookId) {
         if (bookId == null) {
             return 0.0;
         }
-        Double avg = reviewRepository.findAverageRatingByBookId(bookId);
-        return avg != null ? avg : 0.0;
+        Optional<Double> avg = reviewRepository.findAverageRatingByBookId(bookId);
+        return avg.orElse(0.0);
     }
-
     private Book findBookById(long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Book with id " + id + " not found!"));
@@ -122,13 +163,19 @@ public class BookService {
     private Book syncReviews(Long bookId){
         Book book = findBookById(bookId);
         int reviewCount = reviewRepository.findReviewCountByBookId(bookId);
-        BigDecimal avg = new BigDecimal(reviewRepository.findAverageRatingByBookId(book.getBookId()));
+        BigDecimal avg = new BigDecimal(reviewRepository.findAverageRatingByBookId(book.getBookId()).orElse(0.0));
         book.setReviewCount(reviewCount);
         book.setAvgRating(avg);
         return bookRepository.save(book);
     }
+
     private Author findAuthorById(Long id) {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Author with id " + id + " not found!"));
+    }
+
+    private Path resolveStoredFile(Path booksDir, String storedUrl) {
+        String filename = storedUrl.substring(storedUrl.lastIndexOf('/') + 1);
+        return booksDir.resolve(filename);
     }
 }

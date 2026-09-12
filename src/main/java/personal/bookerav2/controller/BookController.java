@@ -12,12 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import personal.bookerav2.dto.books.BookDtoAll;
 import personal.bookerav2.dto.books.BookDtoRequest;
 import personal.bookerav2.dto.books.BookDtoResponse;
 import personal.bookerav2.service.BookService;
 import personal.bookerav2.util.PageRequestFactory;
 
+import java.io.IOException;
 import java.util.Set;
 
 @RestController
@@ -83,4 +85,11 @@ public class BookController {
         return ResponseEntity.ok(bookService.updateBook(newBook, id));
     }
 
+    @Operation(summary = "Upload image")
+    @Parameter(name = "bookId")
+    @Parameter(name = "image", description = "Picture which you want to upload in jpeg/png format")
+    @PostMapping("/upload/{bookId}")
+    public ResponseEntity<BookDtoResponse> updateBookImage(@RequestParam("file") MultipartFile file, @PathVariable Long bookId) throws IOException {
+        return ResponseEntity.ok(bookService.updateBookImage(bookId, file));
+    }
 }

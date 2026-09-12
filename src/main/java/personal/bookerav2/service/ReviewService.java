@@ -18,7 +18,6 @@ import personal.bookerav2.repository.UserRepository;
 
 import java.math.BigDecimal;
 import java.security.Principal;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -32,13 +31,12 @@ public class ReviewService{
         if(principal == null){
             throw new InvalidCredentialsException("NO token, no comment");
         }
-        Review review = ReviewMapper.toReview(r);
+        Review reviewToSave = ReviewMapper.toReview(r);
         Book bookToFind = findBookById(bookId);
         User userToFind = findUserByUsername(principal.getName());
-        review.setBook(bookToFind);
-        review.setUser(userToFind);
-        reviewRepository.save(review);
-        Review reviewToSave = review;
+        reviewToSave.setBook(bookToFind);
+        reviewToSave.setUser(userToFind);
+        reviewRepository.save(reviewToSave);
         calculateBookAvg(bookToFind);
         calculateReviewCount(bookToFind);
         return ReviewMapper.toReviewDtoResponse(reviewToSave);
@@ -91,7 +89,7 @@ public class ReviewService{
         );
     }
     private void calculateBookAvg(Book book){
-        Double reviewScore = reviewRepository.findAverageRatingByBookId(book.getBookId());
+        Double reviewScore = reviewRepository.findAverageRatingByBookId(book.getBookId()).orElse(0.0);
         book.setAvgRating(new BigDecimal(reviewScore));
         bookRepository.save(book);
     }
