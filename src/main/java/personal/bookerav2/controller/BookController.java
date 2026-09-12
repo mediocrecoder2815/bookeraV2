@@ -88,6 +88,8 @@ public class BookController {
     @Operation(summary = "Upload image")
     @Parameter(name = "bookId")
     @Parameter(name = "image", description = "Picture which you want to upload in jpeg/png format")
+    @ApiResponse(responseCode = "404", description = "Uploaded file was not found")
+    @ApiResponse(responseCode = "200", description = "File was uploaded")
     @PostMapping("/upload/{bookId}")
     public ResponseEntity<BookDtoResponse> updateBookImage(@RequestParam("file") MultipartFile file, @PathVariable Long bookId) throws IOException {
         return ResponseEntity.ok(bookService.updateBookImage(bookId, file));

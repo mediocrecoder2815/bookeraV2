@@ -143,9 +143,11 @@ public class BookService {
         if (ct == null || !List.of("image/jpeg","image/png","image/webp","image/gif").contains(ct)) {
             throw new InvalidFileException("Unsupported image type: " + ct);
         }
+        log.debug("TRYING TO TRANFER FILE ", file);
         file.transferTo(booksDir.resolve(filename).toFile());
         book.setPictureUrl("/uploads/books/" + filename);
         bookRepository.save(book);
+        log.debug("SAVED FILE TO {}", uploadDir);
         return getBookById(bookId);
     }
 
