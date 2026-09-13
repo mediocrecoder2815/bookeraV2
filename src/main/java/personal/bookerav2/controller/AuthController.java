@@ -8,13 +8,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import personal.bookerav2.dto.auth.AuthResponse;
 import personal.bookerav2.dto.auth.LoginRequest;
 import personal.bookerav2.dto.auth.RegisterRequest;
+import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.service.AuthService;
 
 @RestController
@@ -55,4 +54,6 @@ public class AuthController {
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
+
+
 }

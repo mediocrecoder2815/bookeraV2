@@ -41,7 +41,8 @@ public class AuthorMapper {
     public static AuthorDtoAll toAuthorDtoAll(Author a){
         return new AuthorDtoAll(a.getAuthorId(),
                                 a.getName(),
-                                a.getSurname());
+                                a.getSurname(),
+                                a.getPictureUrl());
     }
     public static List<AuthorDtoAll> toAuthorDtoList(List<Author> authors){
         return authors

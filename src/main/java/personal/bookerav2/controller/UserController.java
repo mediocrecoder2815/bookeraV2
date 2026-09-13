@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import personal.bookerav2.dto.user.UserBookDtoRequest;
 import personal.bookerav2.dto.user.UserBooksDto;
 import personal.bookerav2.dto.user.UserDtoResponse;
@@ -16,6 +17,7 @@ import personal.bookerav2.dto.user.UserShelfDto;
 import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.service.UserService;
 
+import java.io.IOException;
 import java.security.Principal;
 
 @RestController
@@ -62,6 +64,16 @@ public class UserController {
     public ResponseEntity<UserShelfDto> getShelf(Principal principal){
         return ResponseEntity.ok(userService.getShelf(requirePrincipal(principal)));
     }
+
+
+    @Operation(summary = "Avatar upload")
+    @ApiResponse(responseCode = "200", description = "Avatar was uploaded")
+    @ApiResponse(responseCode = "404", description = "Something want wrong, file was not found")
+    @PostMapping("/upload/me")
+    public ResponseEntity<UserDtoResponse> uploadAvatar(@RequestParam("file") MultipartFile file, Principal principal) throws IOException {
+        return ResponseEntity.ok(userService.uploadAvatar(requirePrincipal(principal), file));
+    }
+
 
     private Principal requirePrincipal(Principal principal) {
         if (principal == null) {

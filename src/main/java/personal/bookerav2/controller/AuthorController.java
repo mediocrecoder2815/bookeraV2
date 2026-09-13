@@ -14,12 +14,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import personal.bookerav2.dto.authors.AuthorDtoAll;
 import personal.bookerav2.dto.authors.AuthorDtoRequest;
 import personal.bookerav2.dto.authors.AuthorDtoResponse;
 import personal.bookerav2.service.AuthorService;
 import personal.bookerav2.util.PageRequestFactory;
 
+import java.io.IOException;
+import java.security.Principal;
 import java.util.Set;
 
 @RestController
@@ -86,5 +89,13 @@ public class AuthorController {
     }
 
 
+    @Operation(summary = "Uploading picture")
+    @ApiResponse(responseCode = "200", description = "File was uploaded")
+    @ApiResponse(responseCode = "404", description = "File was not found")
+    @PostMapping("/upload/{authorId}")
+    public ResponseEntity<AuthorDtoResponse> uploadPicture(@PathVariable Long authorId, @RequestParam("file") MultipartFile file,
+                                                           Principal principal) throws IOException {
+        return ResponseEntity.ok(authorService.uploadPicture(authorId, file, principal));
+    }
 
 }
