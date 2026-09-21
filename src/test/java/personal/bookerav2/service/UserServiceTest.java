@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import personal.bookerav2.dto.user.UserBookDtoRequest;
 import personal.bookerav2.dto.user.UserDtoResponse;
 import personal.bookerav2.entities.*;
+import personal.bookerav2.exceptions.ResourceDuplicateException;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.ReviewRepository;
@@ -138,7 +139,7 @@ class UserServiceTest {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(userBookRepository.findByUserId_UserId(userId)).thenReturn(Set.of(userBook));
 
-            assertThrows(UnsupportedOperationException.class,
+            assertThrows(ResourceDuplicateException.class,
                     () -> userService.addBook(principal, request));
             verify(userBookRepository, never()).save(any());
         }
@@ -189,7 +190,7 @@ class UserServiceTest {
         void shouldThrowWhenStatusIdInvalidLow() {
             UserBookDtoRequest request = new UserBookDtoRequest(1L, (short) -1);
 
-            assertThrows(UnsupportedOperationException.class,
+            assertThrows(IllegalArgumentException.class,
                     () -> userService.updateStatus(principal, request));
         }
 
@@ -197,7 +198,7 @@ class UserServiceTest {
         void shouldThrowWhenStatusIdInvalidHigh() {
             UserBookDtoRequest request = new UserBookDtoRequest(1L, (short) 4);
 
-            assertThrows(UnsupportedOperationException.class,
+            assertThrows(IllegalArgumentException.class,
                     () -> userService.updateStatus(principal, request));
         }
 
@@ -210,7 +211,7 @@ class UserServiceTest {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(userBookRepository.findByUserId_UserId(userId)).thenReturn(new HashSet<>());
 
-            assertThrows(UnsupportedOperationException.class,
+            assertThrows(ResourceNotFound.class,
                     () -> userService.updateStatus(principal, request));
         }
 

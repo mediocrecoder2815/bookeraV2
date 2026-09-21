@@ -1,5 +1,6 @@
 package personal.bookerav2.handlers;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -52,6 +53,13 @@ public class GlobalExceptionHandler {
                     .collect(Collectors.joining("; ")));
             return pd;
         }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleConflict(DataIntegrityViolationException ex){
+        ProblemDetail pd = ProblemDetail.forStatus(DUPLICATE_FOUND);
+        pd.setDetail("Request conflicts with existing data");
+        return pd;
+    }
 
     @ExceptionHandler({PropertyReferenceException.class, IllegalArgumentException.class})
     public ProblemDetail handleBadRequest(Exception ex){

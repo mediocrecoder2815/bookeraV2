@@ -25,6 +25,7 @@ import personal.bookerav2.repository.AuthorRepository;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.CategoryRepository;
 import personal.bookerav2.repository.ReviewRepository;
+import personal.bookerav2.repository.UserBookRepository;
 
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class BookService {
     private final ReviewRepository reviewRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+    private final UserBookRepository userBookRepository;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -99,15 +101,12 @@ public class BookService {
 
 
     @CacheEvict(value = "BOOK_CACHE", key = "#id")
+    @Transactional
     public void deleteBookById(Long id) {
         Book bookToDelete = findBookById(id);
         log.info("Deleting book with id: {}", id);
 
-        authorRepository.findByBooks_BookId(id).forEach(
-                author -> author.getBooks().remove(bookToDelete)
-        );
-        // TODO: when deleting a book it must also be deleted from user_books
-
+        userBookRepository.deleteByBookId_BookId(id);
         bookRepository.delete(bookToDelete);
         log.info("Book with id {} was deleted", id);
     }
@@ -128,7 +127,7 @@ public class BookService {
     }
 
     public BookDtoResponse updateBookImage(Long bookId, MultipartFile file) throws IOException {
-        if(file.isEmpty() || file == null){
+        if (file == null || file.isEmpty()) {
             throw new InvalidFileException("No file was found");
         }
         Book book = findBookById(bookId);

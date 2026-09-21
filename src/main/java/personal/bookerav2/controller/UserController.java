@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Book added, updated user returned",
             content = @Content(schema = @Schema(implementation = UserDtoResponse.class)))
     @PostMapping("/shelf")
-    public ResponseEntity<UserDtoResponse> addBook(Principal principal, @RequestBody UserBookDtoRequest userBook){
+    public ResponseEntity<UserDtoResponse> addBook(Principal principal, @Valid @RequestBody UserBookDtoRequest userBook){
         return ResponseEntity.ok(userService.addBook(requirePrincipal(principal), userBook));
     }
 
@@ -52,7 +53,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Status updated, updated user returned",
             content = @Content(schema = @Schema(implementation = UserDtoResponse.class)))
     @PutMapping("/shelf")
-    public ResponseEntity<UserDtoResponse> updateBookStatus(Principal principal, @RequestBody UserBookDtoRequest bookUpdate){
+    public ResponseEntity<UserDtoResponse> updateBookStatus(Principal principal, @Valid @RequestBody UserBookDtoRequest bookUpdate){
         return ResponseEntity.ok(userService.updateStatus(requirePrincipal(principal), bookUpdate));
     }
 

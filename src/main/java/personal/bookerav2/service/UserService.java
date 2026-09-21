@@ -19,6 +19,7 @@ import personal.bookerav2.dto.wrappers.UserMapper;
 import personal.bookerav2.entities.*;
 import personal.bookerav2.exceptions.InvalidCredentialsException;
 import personal.bookerav2.exceptions.InvalidFileException;
+import personal.bookerav2.exceptions.ResourceDuplicateException;
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.BookRepository;
 import personal.bookerav2.repository.ReviewRepository;
@@ -69,7 +70,7 @@ public class UserService {
         Set<UserBook> ub = findUserBooks(owner.getUserId());
         for (UserBook book : ub ){
             if (book.getBookId().getBookId().equals(userBook.bookId())){
-                throw new UnsupportedOperationException("Already in the shelf");
+                throw new ResourceDuplicateException("Book is already on the shelf");
             }
         }
         UserBook newUserBook = new UserBook();
@@ -83,7 +84,7 @@ public class UserService {
 
     public UserDtoResponse updateStatus(Principal principal, UserBookDtoRequest bookUpdate){
         if (0 > bookUpdate.statusId() || bookUpdate.statusId() > 3){
-            throw new UnsupportedOperationException("Wrong status id only (1-3) supported");
+            throw new IllegalArgumentException("Wrong status id, only (1-3) supported");
         }
         User owner = findUserByUsername(principal.getName());
         Book bookToChange = findBookById(bookUpdate.bookId());
@@ -92,7 +93,7 @@ public class UserService {
                 .filter(userBook1 -> userBook1.getBookId().equals(bookToChange))
                 .findAny();
         if(ub.isEmpty()){
-            throw new UnsupportedOperationException("Should use only with existing items, try add method");
+            throw new ResourceNotFound("Book is not on the shelf, add it first");
         }
         ub.get().setBookStatus(bookUpdate.statusId());
         ub.get().setUpdatedAt(Instant.now());
@@ -103,7 +104,7 @@ public class UserService {
     public UserDtoResponse uploadAvatar(Principal principal, MultipartFile file) throws IOException {
         User owner = findUserByUsername(principal.getName());
 
-        if(file.isEmpty() || file == null){
+        if (file == null || file.isEmpty()) {
             throw new InvalidFileException("No file was found");
         }
         Path userDir = Path.of(uploadDir, "users").toAbsolutePath();
@@ -124,7 +125,7 @@ public class UserService {
             throw new InvalidFileException("Unsupported image type: " + ct);
         }
         file.transferTo(userDir.resolve(filename).toFile());
-        owner.setAvatarUrl("/uploads/author/" + filename);
+        owner.setAvatarUrl("/uploads/users/" + filename);
         userRepository.save(owner);
         return getMe(principal);
     }

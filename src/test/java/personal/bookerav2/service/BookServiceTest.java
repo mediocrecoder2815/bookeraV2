@@ -29,6 +29,7 @@ import java.util.*;
 
 import personal.bookerav2.exceptions.ResourceNotFound;
 import personal.bookerav2.repository.ReviewRepository;
+import personal.bookerav2.repository.UserBookRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,6 +50,9 @@ class BookServiceTest {
 
     @Mock
     private ReviewRepository reviewRepository;
+
+    @Mock
+    private UserBookRepository userBookRepository;
 
     @InjectMocks
     private BookService bookService;

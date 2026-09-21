@@ -65,11 +65,11 @@ public class AuthService {
         if (userToFind.isPresent()){
 
             if (passwordEncoder.matches(request.password(), userToFind.get().getHashedPassword())){
-                String token = jwtService.generateToken(request.username(),
-                        userToFind.get().getRoles().stream()
-                                .map(r -> r.getRoleName())
-                                .toList());
-                return new AuthResponse(token, request.username(), List.of("USER"));
+                List<String> roles = userToFind.get().getRoles().stream()
+                        .map(r -> r.getRoleName())
+                        .toList();
+                String token = jwtService.generateToken(request.username(), roles);
+                return new AuthResponse(token, request.username(), roles);
             }
             else{
                 throw new InvalidCredentialsException("Wrong password or username");
