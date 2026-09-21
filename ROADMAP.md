@@ -66,9 +66,9 @@ a reviewer can actually run this thing and see tests pass.
 
 ## Step 4 — Polish (optional, only after Steps 1–3 are green)
 
-- [ ] GitHub Actions: `mvn test` on push (cheap, high signal)
+- [x] GitHub Actions: `mvn test` on push (cheap, high signal)
 - [ ] Testcontainers integration test against real Postgres
-- [ ] Redis `@Cacheable` on hot reads (book details)
+- [x] Redis `@Cacheable` on hot reads (book details)
 - [ ] Final manual QA pass + clean up `.idea/` from the repo if not intended
 
 ---
