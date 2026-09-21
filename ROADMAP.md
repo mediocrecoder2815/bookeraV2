@@ -43,18 +43,18 @@ fail** (see below). This roadmap only lists what is true or actually getting bui
 
 ## Step 2 — Picture upload (chosen next feature)
 
-- [ ] `POST /api/books/{id}/picture` + `POST /api/authors/{id}/picture`
-- [ ] Start local-filesystem storage: `MultipartFile` → `uploads/`, UUID filename,
+- [x] `POST /api/books/{id}/picture` + `POST /api/authors/{id}/picture`
+- [x] Start local-filesystem storage: `MultipartFile` → `uploads/`, UUID filename,
       store URL in `pictureUrl`, static-resource serving
-- [ ] Validate: content type (`image/png|jpeg`), max size, reject empty payloads
-- [ ] Add request param → OpenAPI docs for the new endpoints (springdoc picks up multipart)
-- [ ] Tests: success path, wrong type, oversized file, book not found (404)
-- [ ] Follow-up (only if needed for an interview answer): S3/MinIO swap-out in mind
+- [x] Validate: content type (`image/png|jpeg`), max size, reject empty payloads
+- [x] Add request param → OpenAPI docs for the new endpoints (springdoc picks up multipart)
+- [x] Tests: success path, wrong type, oversized file, book not found (404)
+- [x] Follow-up (only if needed for an interview answer): S3/MinIO swap-out in mind
 
 ## Step 3 — ONE depth feature (not five)
 
 Pick a single feature that reuses existing code rather than adding a new domain:
-
+- [x] Added caching for book entity using Redis
 - [ ] **Reading progress** (% complete, start/finish dates on `book_user`) — reuses the
       shelf feature that already exists
 - [ ] **OR** custom bookshelves (user-defined many-to-many) — same `book_user` shape
