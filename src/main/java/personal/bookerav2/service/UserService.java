@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,6 +95,7 @@ public class UserService {
             throw new UnsupportedOperationException("Should use only with existing items, try add method");
         }
         ub.get().setBookStatus(bookUpdate.statusId());
+        ub.get().setUpdatedAt(Instant.now());
         userBookRepository.save(ub.get());
         return getMe(principal);
     }

@@ -67,9 +67,10 @@ public class UserController {
 
 
     @Operation(summary = "Avatar upload")
-    @ApiResponse(responseCode = "200", description = "Avatar was uploaded")
+    @ApiResponse(responseCode = "200", description = "Status updated, updated user returned",
+            content = @Content(schema = @Schema(implementation = UserDtoResponse.class)))
     @ApiResponse(responseCode = "404", description = "Something want wrong, file was not found")
-    @PostMapping("/upload/me")
+    @PostMapping("/upload")
     public ResponseEntity<UserDtoResponse> uploadAvatar(@RequestParam("file") MultipartFile file, Principal principal) throws IOException {
         return ResponseEntity.ok(userService.uploadAvatar(requirePrincipal(principal), file));
     }

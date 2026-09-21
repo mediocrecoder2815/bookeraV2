@@ -3,6 +3,9 @@ package personal.bookerav2.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,7 @@ public class BookService {
     @Value("${app.upload.dir}")
     private String uploadDir;
 
+    @Cacheable(value = "BOOK_CACHE", key = "#id")
     public BookDtoResponse getBookById(Long id) {
         Book book = syncReviews(id);
         int[] ratings = new int[5];
@@ -70,6 +74,7 @@ public class BookService {
         return books.map(BookMapper::toAllBookDto);
     }
 
+    @CachePut(value = "BOOK_CACHE", key = "#result.bookId()")
     @Transactional
     public BookDtoResponse createBook(BookDtoRequest bookRequest) {
         Book newBook = BookMapper.toBook(bookRequest);
@@ -92,6 +97,8 @@ public class BookService {
         return BookMapper.toResponseDto(savedBook, avgRating, new int[5]);
     }
 
+
+    @CacheEvict(value = "BOOK_CACHE", key = "#id")
     public void deleteBookById(Long id) {
         Book bookToDelete = findBookById(id);
         log.info("Deleting book with id: {}", id);
@@ -105,6 +112,7 @@ public class BookService {
         log.info("Book with id {} was deleted", id);
     }
 
+    @CachePut(value = "BOOK_CACHE", key = "#result.bookId()")
     @Transactional
     public BookDtoResponse updateBook(BookDtoRequest bookRequest, Long bookId) {
         Book bookToUpdate = findBookById(bookId);
@@ -143,7 +151,6 @@ public class BookService {
         if (ct == null || !List.of("image/jpeg","image/png","image/webp","image/gif").contains(ct)) {
             throw new InvalidFileException("Unsupported image type: " + ct);
         }
-        log.debug("TRYING TO TRANFER FILE ", file);
         file.transferTo(booksDir.resolve(filename).toFile());
         book.setPictureUrl("/uploads/books/" + filename);
         bookRepository.save(book);
