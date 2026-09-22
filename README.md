@@ -167,8 +167,6 @@ pagination, backed by an H2 database for slice tests.
   so a book's rating can be stale for the TTL (5 min); `updateBookImage` may
   return a cached pre-upload DTO.
 - Actuator is exposed at `/m/**` with `permitAll` and `include=*`, including
-  `heapdump`; restrict this before any real deployment.
+  `heapdump`;
 - Pictures are stored on the local filesystem; a production deployment would
   swap this for object storage (S3/MinIO).
-
-See `ROADMAP.md` for the full list and rationale.

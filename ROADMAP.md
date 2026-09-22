@@ -5,8 +5,8 @@
 and categories.
 
 **Reality check (2026-09):** the app compiles and the core flow works — auth with
-JWT, book/author/category CRUD, reviews, user shelf, Swagger UI. **98 tests, 2
-fail** (see below). This roadmap only lists what is true or actually getting built.
+JWT, book/author/category CRUD, reviews, user shelf, Swagger UI. **99 tests. 
+This roadmap only lists what is true or actually getting built.
 
 ---
 
@@ -69,16 +69,4 @@ a reviewer can actually run this thing and see tests pass.
 - [x] GitHub Actions: `mvn test` on push (cheap, high signal)
 - [ ] Testcontainers integration test against real Postgres
 - [x] Redis `@Cacheable` on hot reads (book details)
-- [ ] Final manual QA pass + clean up `.idea/` from the repo if not intended
-
----
-
-## Tech-learning notes (why these choices)
-
-- **Flyway** — schema migrations, used in every production Java shop
-- **Spring Security + JWT** — the single most-asked Spring topic in junior interviews
-- **springdoc/OpenAPI** — API documentation you can show in a portfolio
-- **File upload** (Step 2) — `MultipartFile`, validation, storage — a frequent
-  interview topic and a nice file-handling playground
-- **GitHub Actions** — CI/CD basics, near-universal in job postings
-- **Testcontainers** — integration testing without brittle mocks
+- [x] Final manual QA pass + clean up `.idea/` from the repo if not intended
